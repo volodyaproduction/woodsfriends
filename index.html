@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+<title>Пиксельное дерево</title>
+
+<!--
+  index.html — точка входа
+
+  Что делает: подключает все компоненты,
+    содержит каркас сцены (звёзды).
+
+  Компоненты:
+    components/scene/scene.css
+      → фон, звёзды, земля
+    components/tree/tree.css
+      → цвета пикселей дерева, keyframes
+    components/tree/tree.js
+      → рисует дерево (ствол, ветки, листья)
+    components/tree/animate.js
+      → включает/выключает анимации
+    components/player/player.css
+      → стили кнопки play/stop
+    components/player/player.js
+      → кнопка + музыка
+
+  Порядок подключения JS важен:
+    1. tree.js (рисование)
+    2. animate.js (функции start/stop)
+    3. player.js (использует animate.js)
+-->
+
+<!-- CSS компоненты -->
+<link rel="stylesheet"
+      href="components/scene/scene.css">
+<link rel="stylesheet"
+      href="components/tree/tree.css">
+<link rel="stylesheet"
+      href="components/player/player.css">
+</head>
+<body>
+
+<!-- Сцена — контейнер для всего -->
+<div class="scene" id="scene">
+
+  <!-- Звёзды (часть сцены, мерцают всегда) -->
+  <div class="star"
+       style="left:30px; top:20px;
+              animation-delay:-0.5s;"></div>
+  <div class="star"
+       style="left:90px; top:50px;
+              animation-delay:-1.2s;"></div>
+  <div class="star"
+       style="left:320px; top:30px;
+              animation-delay:-0.8s;"></div>
+  <div class="star"
+       style="left:360px; top:70px;
+              animation-delay:-2s;"></div>
+  <div class="star"
+       style="left:50px; top:100px;
+              animation-delay:-1.5s;"></div>
+  <div class="star"
+       style="left:350px; top:120px;
+              animation-delay:-0.3s;"></div>
+  <div class="star"
+       style="left:140px; top:25px;
+              animation-delay:-2.5s;"></div>
+  <div class="star"
+       style="left:280px; top:60px;
+              animation-delay:-1.8s;"></div>
+
+
+</div>
+
+<!-- JS компоненты (порядок важен!) -->
+<script src="components/tree/tree.js"></script>
+<script src="components/tree/animate.js"></script>
+<script src="components/player/player.js"></script>
+
+<!-- Инициализация: собираем компоненты -->
+<script>
+  document.addEventListener(
+    'DOMContentLoaded',
+    function() {
+      var scene =
+        document.getElementById('scene');
+      // 1. Рисуем дерево
+      buildTree(scene);
+      // 2. Создаём кнопку play/stop
+      initPlayer(scene);
+    }
+  );
+</script>
+
+</body>
+</html>

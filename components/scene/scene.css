@@ -1,0 +1,55 @@
+/*
+ * scene.css — стили окружения (сцена)
+ *
+ * Что делает: фон (ночное небо), звёзды, земля.
+ * Подключается: в index.html через <link>.
+ * Не содержит: стилей дерева или плеера.
+ *
+ * Звёзды мерцают всегда (не зависят от play/stop).
+ */
+
+/* 1. Сброс и фон */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #1a1a2e;
+}
+
+.scene {
+  position: relative;
+  width: 400px;
+  height: 560px;
+}
+
+/* 2. Звёзды (мерцают всегда, это фон) */
+.star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  opacity: 0.6;
+  animation: starTwinkle 3s ease-in-out infinite;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 0.9; }
+}
+
+/* 3. Земля */
+.ground-line {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.ground {
+  background: #2C3E50;
+}

@@ -1,0 +1,119 @@
+/*
+ * tree.css — визуальные стили дерева
+ *
+ * Что делает: цвета и размеры пикселей дерева,
+ *   фонарь, keyframes анимаций.
+ * Подключается: в index.html через <link>.
+ * Связан с:
+ *   - tree.js (создаёт div'ы с этими классами)
+ *   - animate.js (включает анимации через
+ *     класс .playing на .scene)
+ *
+ * Анимации по умолчанию ВЫКЛЮЧЕНЫ (статичная
+ * картинка). Включаются когда animate.js
+ * добавляет класс .playing на элемент .scene.
+ */
+
+/* 1. Базовый пиксель — строительный блок */
+.px {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+}
+
+/* 2. Цвета ствола и веток */
+.trunk   { background: #8B5E3C; }
+.trunk-d { background: #6B4226; }
+.branch  { background: #7A5230; }
+.root    { background: #6B4226; }
+
+/* 3. Цвета листьев (3 оттенка зелёного) */
+.leaf    { background: #5B8C3E; }
+.leaf-l  { background: #6EA644; }
+.leaf-d  { background: #3E6B28; }
+
+/* 4. Фонарь */
+.lantern     { background: #C0392B; }
+.lantern-top { background: #922B21; }
+
+.glow {
+  background: #F4D03F;
+  box-shadow:
+    0 0 12px 6px rgba(244, 208, 63, 0.5);
+}
+
+.glow-soft {
+  background: rgba(244, 208, 63, 0.15);
+  border-radius: 50%;
+}
+
+/* 5. Keyframes анимаций дерева */
+
+/* Покачивание листьев */
+@keyframes sway {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(2px); }
+}
+
+/* Мерцание света фонаря */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  30%      { opacity: 0.85; }
+  50%      { opacity: 1; }
+  70%      { opacity: 0.7; }
+  90%      { opacity: 0.95; }
+}
+
+/* Покачивание фонаря */
+@keyframes lanternSway {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(2deg); }
+  75%      { transform: rotate(-2deg); }
+}
+
+/* Пульсация свечения */
+@keyframes glowPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50%      { transform: scale(1.1); opacity: 0.5; }
+}
+
+/* 6. Плавный возврат при остановке анимации */
+.leaves-group,
+.leaves-group-2,
+.leaves-group-3 {
+  transition: transform 0.8s ease-out;
+}
+
+.lantern-group {
+  transform-origin: top center;
+  transition: transform 0.8s ease-out;
+}
+
+/* 7. Анимации включаются классом .playing */
+.scene.playing .leaves-group {
+  animation: sway 4s ease-in-out infinite;
+}
+
+.scene.playing .leaves-group-2 {
+  animation: sway 4.5s ease-in-out infinite;
+  animation-delay: -1s;
+}
+
+.scene.playing .leaves-group-3 {
+  animation: sway 3.8s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+.scene.playing .lantern-group {
+  animation:
+    lanternSway 3s ease-in-out infinite;
+}
+
+.scene.playing .glow {
+  animation: flicker 2s ease-in-out infinite;
+}
+
+.scene.playing .glow-area {
+  animation:
+    glowPulse 3s ease-in-out infinite;
+}

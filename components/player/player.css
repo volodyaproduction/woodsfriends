@@ -1,0 +1,36 @@
+/*
+ * player.css — стили кнопки play/stop
+ *
+ * Подключается: в index.html через <link>.
+ * Связан с: player.js (создаёт .player-btn).
+ */
+
+/* 1. Кнопка — минималистичная, внизу сцены */
+.player-btn {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 24px;
+  background: transparent;
+  color: #8a8a8a;
+  border: 1px solid #444;
+  border-radius: 20px;
+  font-family: monospace;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+/* 2. Hover — подсвечивается */
+.player-btn:hover {
+  color: #fff;
+  border-color: #888;
+}
+
+/* 3. Активная (играет) — жёлтый акцент */
+.player-btn.active {
+  color: #F4D03F;
+  border-color: #F4D03F;
+}
