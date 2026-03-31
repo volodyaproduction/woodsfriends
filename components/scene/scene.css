@@ -26,6 +26,7 @@ body {
   height: 560px;
   transform-origin: top center;
   transform: scale(var(--scene-scale, 1));
+  transform-style: preserve-3d; /* Фикс пропадания 3D-слоев (листьев) при зуме в Safari */
 }
 
 /* 2. Звёзды (мерцают всегда, это фон) */
@@ -43,7 +44,75 @@ body {
   50%      { opacity: 0.9; }
 }
 
-/* 3. Земля */
+/* 3. Падающие кометы */
+
+/*
+ * Комета — маленький круглый элемент,
+ * хвост реализован через ::after с linear-gradient.
+ * Анимация запускается только при .playing на .scene.
+ */
+.meteor {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Хвост — градиентная полоса позади кометы,
+   повёрнута под угол траектории (~27°) */
+.meteor::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%) rotate(-27deg);
+  transform-origin: left center;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+}
+
+/* Комета видна ~10% цикла, остальное — пауза */
+@keyframes meteorFall {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  15% {
+    transform: translate(-500px, 260px);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-500px, 260px);
+    opacity: 0;
+  }
+}
+
+/* Активация комет только во время воспроизведения.
+   Цикл 18-20с, комета видна ~10% = ~2с пролёта */
+.scene.playing .meteor:nth-child(1) {
+  animation: meteorFall 18s linear 3s infinite;
+}
+
+.scene.playing .meteor:nth-child(2) {
+  animation: meteorFall 20s linear 12s infinite;
+}
+
+/* Отключаем кометы при prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .meteor {
+    display: none;
+  }
+}
+
+/* 4. Земля */
 .ground-line {
   position: absolute;
   bottom: 20px;
