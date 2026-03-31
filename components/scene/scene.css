@@ -24,6 +24,7 @@ body {
   position: relative;
   width: 400px;
   height: 560px;
+  flex: 0 0 auto;
   transform-origin: top center;
   transform: scale(var(--scene-scale, 1));
   transform-style: preserve-3d; /* Фикс пропадания 3D-слоев (листьев) при зуме в Safari */
