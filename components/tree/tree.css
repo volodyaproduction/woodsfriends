@@ -36,7 +36,13 @@
 .lantern     { background: #C0392B; }
 .lantern-top { background: #922B21; }
 
+/* Потушенный фонарь — тёмно-жёлтое стекло */
 .glow {
+  background: #1A1A1A;
+  box-shadow: none;
+}
+/* При Play — яркий огонь */
+.scene.playing .glow {
   background: #F4D03F;
   box-shadow:
     0 0 12px 6px rgba(244, 208, 63, 0.5);
@@ -84,9 +90,17 @@
   transition: transform 0.8s ease-out;
 }
 
+/* Фонарь качается плавно при остановке */
 .lantern-group {
   transform-origin: top center;
   transition: transform 0.8s ease-out;
+}
+
+/* Свечение скрыто по умолчанию через visibility,
+   чтобы не конфликтовать с opacity-анимациями */
+.glow-soft,
+.glow-area {
+  visibility: hidden;
 }
 
 /* 7. Анимации включаются классом .playing */
@@ -104,15 +118,23 @@
   animation-delay: -2s;
 }
 
+/* Фонарь начинает качаться при playing */
 .scene.playing .lantern-group {
   animation:
     lanternSway 3s ease-in-out infinite;
+}
+
+/* Свечение показывается и мерцает при playing */
+.scene.playing .glow-soft,
+.scene.playing .glow-area {
+  visibility: visible;
 }
 
 .scene.playing .glow {
   animation: flicker 2s ease-in-out infinite;
 }
 
+/* Ореол пульсирует при playing */
 .scene.playing .glow-area {
   animation:
     glowPulse 3s ease-in-out infinite;
