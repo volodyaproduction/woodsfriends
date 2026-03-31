@@ -32,12 +32,22 @@ function initPlayer(scene) {
     console.log('Музыка не загружена');
   }
 
-  // 3. Создаём кнопку
+  // 3. Создаём обёртку, кнопку и нотку
+  var wrap = document.createElement('div');
+  wrap.className = 'player-wrap';
+
+  var note = document.createElement('span');
+  note.className = 'player-note';
+  note.textContent = '♪';
+
   var btn = document.createElement('button');
   btn.className = 'player-btn';
-  btn.textContent = '\u25B6 Play';
+  btn.innerHTML = '&#9654; Play';
   btn.setAttribute('aria-label', 'Play/Stop');
-  scene.appendChild(btn);
+
+  wrap.appendChild(note);
+  wrap.appendChild(btn);
+  scene.appendChild(wrap);
 
   // 4. Обработчик нажатия
   btn.addEventListener('click', function() {
@@ -46,16 +56,18 @@ function initPlayer(scene) {
     if (isPlaying) {
       // 4a. Включаем
       startAnimation(scene);
-      btn.textContent = '\u25A0 Stop';
+      btn.innerHTML = '&#9632; Stop';
       btn.classList.add('active');
+      note.classList.add('visible');
       if (audio) {
         audio.play().catch(function() {});
       }
     } else {
       // 4b. Выключаем
       stopAnimation(scene);
-      btn.textContent = '\u25B6 Play';
+      btn.innerHTML = '&#9654; Play';
       btn.classList.remove('active');
+      note.classList.remove('visible');
       if (audio) {
         audio.pause();
         audio.currentTime = 0;
