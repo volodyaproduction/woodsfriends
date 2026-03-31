@@ -85,6 +85,15 @@
 
 /* 6. Анимации объявлены сразу, но приостановлены —
       без скачка при старте/стопе */
+
+/* will-change — подсказка GPU выделить отдельный слой
+   заранее, устраняет мерцание на мобильных */
+.leaves-group,
+.leaves-group-2,
+.leaves-group-3 {
+  will-change: transform;
+}
+
 .leaves-group {
   animation: sway 4s ease-in-out infinite paused;
 }
