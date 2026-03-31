@@ -83,17 +83,21 @@
   50%      { transform: scale(1.1); opacity: 0.5; }
 }
 
-/* 6. Плавный возврат при остановке анимации */
-.leaves-group,
-.leaves-group-2,
+/* 6. Анимации объявлены сразу, но приостановлены —
+      без скачка при старте/стопе */
+.leaves-group {
+  animation: sway 4s ease-in-out infinite paused;
+}
+.leaves-group-2 {
+  animation: sway 4.5s ease-in-out infinite -1s paused;
+}
 .leaves-group-3 {
-  transition: transform 0.8s ease-out;
+  animation: sway 3.8s ease-in-out infinite -2s paused;
 }
 
-/* Фонарь качается плавно при остановке */
 .lantern-group {
   transform-origin: top center;
-  transition: transform 0.8s ease-out;
+  animation: lanternSway 3s ease-in-out infinite paused;
 }
 
 /* Свечение скрыто по умолчанию через visibility,
@@ -103,25 +107,15 @@
   visibility: hidden;
 }
 
-/* 7. Анимации включаются классом .playing */
-.scene.playing .leaves-group {
-  animation: sway 4s ease-in-out infinite;
-}
-
-.scene.playing .leaves-group-2 {
-  animation: sway 4.5s ease-in-out infinite;
-  animation-delay: -1s;
-}
-
+/* 7. Анимации запускаются классом .playing */
+.scene.playing .leaves-group,
+.scene.playing .leaves-group-2,
 .scene.playing .leaves-group-3 {
-  animation: sway 3.8s ease-in-out infinite;
-  animation-delay: -2s;
+  animation-play-state: running;
 }
 
-/* Фонарь начинает качаться при playing */
 .scene.playing .lantern-group {
-  animation:
-    lanternSway 3s ease-in-out infinite;
+  animation-play-state: running;
 }
 
 /* Свечение показывается и мерцает при playing */
