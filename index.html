@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Пиксельное дерево</title>
 
 <!--
@@ -106,6 +106,23 @@
       },
       { passive: false }
     );
+  })();
+</script>
+
+<!-- Отключение зума (double-tap / pinch) в мобильных WebView -->
+<script>
+  (function() {
+    function prevent(e) { e.preventDefault(); }
+
+    // iOS Safari / iOS WebView
+    document.addEventListener('gesturestart', prevent, { passive: false });
+    document.addEventListener('gesturechange', prevent, { passive: false });
+    document.addEventListener('gestureend', prevent, { passive: false });
+
+    // Desktop pinch-zoom (трекпад) через Ctrl+wheel
+    window.addEventListener('wheel', function(e) {
+      if (e.ctrlKey) e.preventDefault();
+    }, { passive: false });
   })();
 </script>
 
