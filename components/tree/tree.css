@@ -32,16 +32,18 @@
 .leaf-l  { background: #6EA644; }
 .leaf-d  { background: #3E6B28; }
 
-/* 4. Фонарь */
-.lantern     { background: #C0392B; }
-.lantern-top { background: #922B21; }
+/* 4. Фонарь (выключен — серый корпус, красное стекло) */
+.lantern     { background: #6B6B6B; }
+.lantern-top { background: #4A4A4A; }
 
-/* Потушенный фонарь — тёмно-жёлтое стекло */
 .glow {
-  background: #1A1A1A;
+  background: #8B2500;
   box-shadow: none;
 }
-/* При Play — яркий огонь */
+
+/* При Play — корпус нагревается, огонь горит */
+.scene.playing .lantern     { background: #C0392B; }
+.scene.playing .lantern-top { background: #922B21; }
 .scene.playing .glow {
   background: #F4D03F;
   box-shadow:

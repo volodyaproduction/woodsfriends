@@ -137,7 +137,7 @@ function buildTree(scene) {
   var glowArea = document.createElement('div');
   glowArea.className = 'glow-area';
   glowArea.style.cssText =
-    'position:absolute; left:-20px; top:-10px;'
+    'position:absolute; left:-12px; top:-12px;'
     + 'width:56px; height:56px;';
 
   var glowSoft = document.createElement('div');
