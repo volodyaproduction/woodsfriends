@@ -80,6 +80,35 @@
 
 </div>
 
+<!-- Блокировка сворачивания в Telegram-браузере -->
+<script>
+  (function() {
+    // 1. Блокируем нативный touchmove на сцене,
+    //    чтобы свайп вниз не сворачивал страницу
+    //    в браузере внутри Telegram
+    var touchOnScene = false;
+
+    document.addEventListener(
+      'touchstart',
+      function(e) {
+        var scene =
+          document.getElementById('scene');
+        touchOnScene = !!scene &&
+          scene.contains(e.target);
+      },
+      { passive: true }
+    );
+
+    document.addEventListener(
+      'touchmove',
+      function(e) {
+        if (touchOnScene) e.preventDefault();
+      },
+      { passive: false }
+    );
+  })();
+</script>
+
 <!-- Масштабирование под мобильный экран -->
 <script>
   (function() {
