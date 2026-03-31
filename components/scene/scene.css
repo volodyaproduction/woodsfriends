@@ -14,15 +14,18 @@
 body {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   min-height: 100vh;
   background: #1a1a2e;
+  overflow: hidden;
 }
 
 .scene {
   position: relative;
   width: 400px;
   height: 560px;
+  transform-origin: top center;
+  transform: scale(var(--scene-scale, 1));
 }
 
 /* 2. Звёзды (мерцают всегда, это фон) */

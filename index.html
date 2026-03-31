@@ -74,6 +74,41 @@
 
 </div>
 
+<!-- Масштабирование под мобильный экран -->
+<script>
+  (function() {
+    var ticking = false;
+
+    function updateScale() {
+      // 1. Вычисляем сырой масштаб по меньшей стороне
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+      var raw = Math.min(vw / 400, vh / 560);
+
+      // 2. Округляем к сетке 16px — избегаем
+      //    размытия пиксель-арта при дробном scale
+      var scale = Math.floor(raw * 16) / 16;
+
+      document.documentElement.style
+        .setProperty('--scene-scale', scale);
+
+      ticking = false;
+    }
+
+    function onResize() {
+      // 3. Throttle через rAF — не чаще 1 раза в кадр
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateScale);
+      }
+    }
+
+    window.addEventListener('resize', onResize);
+    // 4. Первоначальная установка до рендера
+    updateScale();
+  })();
+</script>
+
 <!-- JS компоненты (порядок важен!) -->
 <script src="components/tree/tree.js"></script>
 <script src="components/tree/animate.js"></script>
