@@ -91,7 +91,12 @@
 .leaves-group,
 .leaves-group-2,
 .leaves-group-3 {
+  left: 0;
+  top: 0;
+  width: 400px;
+  height: 560px;
   will-change: transform;
+  backface-visibility: hidden;
 }
 
 .leaves-group {
