@@ -1,11 +1,11 @@
 /*
- * player.css — стили кнопки play/stop
+ * player.css — play/stop button styles
  *
- * Подключается: в index.html через <link>.
- * Связан с: player.js (создаёт .player-btn).
+ * Included in: index.html via <link>.
+ * Related to: player.js (creates .player-btn).
  */
 
-/* 1. Обёртка — позиционирует кнопку и нотку */
+/* 1. Wrapper — positions button and note icon */
 .player-wrap {
   position: absolute;
   bottom: 40px;
@@ -17,7 +17,7 @@
   z-index: 10;
 }
 
-/* 2. Кнопка — минималистичная */
+/* 2. Button — minimalist */
 .player-btn {
   padding: 8px 24px;
   background: transparent;
@@ -31,19 +31,19 @@
   touch-action: manipulation;
 }
 
-/* 3. Hover — подсвечивается */
+/* 3. Hover — highlight */
 .player-btn:hover {
   color: #fff;
   border-color: #888;
 }
 
-/* 3. Активная (играет) — жёлтый акцент */
+/* 3. Active (playing) — yellow accent */
 .player-btn.active {
   color: #F4D03F;
   border-color: #F4D03F;
 }
 
-/* 5. Нотка — над кнопкой, не влияет на размер */
+/* 5. Note icon — above button, does not affect layout */
 .player-note {
   font-size: 14px;
   color: #F4D03F;
@@ -54,14 +54,14 @@
   margin-bottom: 4px;
 }
 
-/* 6. Нотка видна при воспроизведении */
+/* 6. Note icon visible during playback */
 .player-note.visible {
   opacity: 1;
   transform: translateY(0);
   animation: noteFloat 2s ease-in-out infinite;
 }
 
-/* 7. Анимация покачивания нотки */
+/* 7. Note float animation */
 @keyframes noteFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-3px); }

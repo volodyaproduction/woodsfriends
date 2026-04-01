@@ -1,25 +1,25 @@
 /*
- * animate.js — управление анимациями дерева
+ * animate.js — controls tree animations
  *
- * Что делает: включает/выключает анимации
- *   (покачивание листьев, мерцание фонаря)
- *   через CSS-класс .playing на элементе .scene.
+ * What it does: toggles animations
+ *   (leaf sway, lantern flicker)
+ *   via CSS class .playing on the .scene element.
  *
- * Вызывается: из player.js при нажатии play/stop.
- * Зависит от: tree.css (keyframes и правила
- *   .scene.playing ...).
+ * Called from: player.js on play/stop click.
+ * Depends on: tree.css (keyframes and
+ *   .scene.playing rules).
  *
- * Как работает:
- *   - startAnimation() → .scene получает класс
- *     .playing → CSS-правила в tree.css включают
- *     анимации
- *   - stopAnimation() → класс убирается →
- *     transition в tree.css плавно возвращает
- *     элементы в исходное положение
+ * How it works:
+ *   - startAnimation() → .scene gets class
+ *     .playing → CSS rules in tree.css enable
+ *     animations
+ *   - stopAnimation() → class is removed →
+ *     transition in tree.css smoothly returns
+ *     elements to their initial state
  *
- * Экспортирует:
- *   startAnimation(scene) — запуск
- *   stopAnimation(scene)  — остановка
+ * Exports:
+ *   startAnimation(scene) — start
+ *   stopAnimation(scene)  — stop
  */
 
 function startAnimation(scene) {

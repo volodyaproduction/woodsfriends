@@ -1,14 +1,14 @@
 /*
- * scene.css — стили окружения (сцена)
+ * scene.css — environment styles (scene)
  *
- * Что делает: фон (ночное небо), звёзды, земля.
- * Подключается: в index.html через <link>.
- * Не содержит: стилей дерева или плеера.
+ * What it does: background (night sky), stars, ground.
+ * Included in: index.html via <link>.
+ * Does not contain: tree or player styles.
  *
- * Звёзды мерцают всегда (не зависят от play/stop).
+ * Stars twinkle always (independent of play/stop).
  */
 
-/* 1. Сброс и фон */
+/* 1. Reset and background */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -27,10 +27,10 @@ body {
   flex: 0 0 auto;
   transform-origin: top center;
   transform: scale(var(--scene-scale, 1));
-  transform-style: preserve-3d; /* Фикс пропадания 3D-слоев (листьев) при зуме в Safari */
+  transform-style: preserve-3d; /* Fix for 3D layers (leaves) disappearing on zoom in Safari */
 }
 
-/* 2. Звёзды (мерцают всегда, это фон) */
+/* 2. Stars (always twinkle, background element) */
 .star {
   position: absolute;
   width: 4px;
@@ -45,12 +45,12 @@ body {
   50%      { opacity: 0.9; }
 }
 
-/* 3. Падающие кометы */
+/* 3. Falling meteors */
 
 /*
- * Комета — маленький круглый элемент,
- * хвост реализован через ::after с linear-gradient.
- * Анимация запускается только при .playing на .scene.
+ * Meteor — small round element,
+ * tail implemented via ::after with linear-gradient.
+ * Animation runs only when .playing is on .scene.
  */
 .meteor {
   position: absolute;
@@ -62,8 +62,8 @@ body {
   pointer-events: none;
 }
 
-/* Хвост — градиентная полоса позади кометы,
-   повёрнута под угол траектории (~27°) */
+/* Tail — gradient strip behind the meteor,
+   rotated to match trajectory angle (~27°) */
 .meteor::after {
   content: '';
   position: absolute;
@@ -80,7 +80,7 @@ body {
   );
 }
 
-/* Комета видна ~10% цикла, остальное — пауза */
+/* Meteor visible ~10% of the cycle, rest is pause */
 @keyframes meteorFall {
   0% {
     transform: translate(0, 0);
@@ -96,8 +96,8 @@ body {
   }
 }
 
-/* Активация комет только во время воспроизведения.
-   Цикл 18-20с, комета видна ~10% = ~2с пролёта */
+/* Meteors active only during playback.
+   Cycle 18-20s, meteor visible ~10% = ~2s flight */
 .scene.playing .meteor:nth-child(1) {
   animation: meteorFall 18s linear 3s infinite;
 }
@@ -106,14 +106,14 @@ body {
   animation: meteorFall 20s linear 12s infinite;
 }
 
-/* Отключаем кометы при prefers-reduced-motion */
+/* Disable meteors for prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .meteor {
     display: none;
   }
 }
 
-/* 4. Земля */
+/* 4. Ground */
 .ground-line {
   position: absolute;
   bottom: 20px;

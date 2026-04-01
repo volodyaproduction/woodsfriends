@@ -1,38 +1,36 @@
 /*
- * player.js — компонент плеера (кнопка play/stop)
+ * player.js — player component (play/stop button)
  *
- * Что делает: создаёт кнопку play/stop внутри
- *   сцены. При нажатии запускает/останавливает
- *   анимации дерева и музыку.
+ * What it does: creates a play/stop button inside
+ *   the scene. On click starts/stops tree
+ *   animations and music.
  *
- * Вызывается: из index.html после загрузки DOM.
- * Зависит от:
- *   - animate.js (функции startAnimation,
- *     stopAnimation — должен быть подключён
- *     раньше в index.html)
- *   - player.css (стили кнопки .player-btn)
- *   - assets/music.mp3 (опционально, если нет
- *     файла — работает без музыки)
+ * Called from: index.html after DOM is loaded.
+ * Depends on:
+ *   - animate.js (startAnimation, stopAnimation —
+ *     must be included before in index.html)
+ *   - player.css (styles for .player-btn)
+ *   - assets/music.mp3 (optional — works without it)
  *
- * Экспортирует: функцию initPlayer(scene)
- *   scene — DOM-элемент <div id="scene">
+ * Exports: initPlayer(scene)
+ *   scene — DOM element <div id="scene">
  */
 
 function initPlayer(scene) {
 
-  // 1. Состояние плеера
+  // 1. Player state
   var isPlaying = false;
   var audio = null;
 
-  // 2. Загрузка музыки (не обязательна)
+  // 2. Load audio (optional)
   try {
     audio = new Audio('assets/music.mp3');
     audio.loop = true;
   } catch (e) {
-    console.log('Музыка не загружена');
+    console.log('Audio not loaded');
   }
 
-  // 3. Создаём обёртку, кнопку и нотку
+  // 3. Create wrapper, button, and note icon
   var wrap = document.createElement('div');
   wrap.className = 'player-wrap';
 
@@ -49,12 +47,12 @@ function initPlayer(scene) {
   wrap.appendChild(btn);
   scene.appendChild(wrap);
 
-  // 4. Обработчик нажатия
+  // 4. Click handler
   btn.addEventListener('click', function() {
     isPlaying = !isPlaying;
 
     if (isPlaying) {
-      // 4a. Включаем
+      // 4a. Start
       startAnimation(scene);
       btn.innerHTML = '&#9632; Stop';
       btn.classList.add('active');
@@ -63,7 +61,7 @@ function initPlayer(scene) {
         audio.play().catch(function() {});
       }
     } else {
-      // 4b. Выключаем
+      // 4b. Stop
       stopAnimation(scene);
       btn.innerHTML = '&#9654; Play';
       btn.classList.remove('active');

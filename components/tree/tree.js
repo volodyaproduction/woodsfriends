@@ -1,20 +1,20 @@
 /*
- * tree.js — рисует пиксельное дерево
+ * tree.js — builds the pixel tree
  *
- * Что делает: создаёт все div-элементы дерева
- *   (ствол, ветки, листья, фонарь, корни)
- *   и добавляет их в контейнер сцены.
+ * What it does: creates all div elements of the tree
+ *   (trunk, branches, leaves, lantern, roots)
+ *   and appends them to the scene container.
  *
- * Вызывается: из index.html после загрузки DOM.
- * Зависит от: tree.css (классы .px, .trunk и т.д.)
+ * Called from: index.html after DOM is loaded.
+ * Depends on: tree.css (classes .px, .trunk, etc.)
  *
- * Экспортирует: функцию buildTree(scene)
- *   scene — DOM-элемент <div id="scene">
+ * Exports: buildTree(scene)
+ *   scene — DOM element <div id="scene">
  */
 
 function buildTree(scene) {
 
-  // 1. Вспомогательная: создаёт один пиксель
+  // 1. Helper: creates a single pixel element
   function px(left, top, cls, parent) {
     var el = document.createElement('div');
     el.className = 'px ' + cls;
@@ -24,15 +24,14 @@ function buildTree(scene) {
     return el;
   }
 
-  // 2. Ствол — нижняя часть (3 пикселя × 5 рядов)
+  // 2. Trunk — lower part (3 pixels × 5 rows)
   for (var y = 400; y >= 336; y -= 16) {
     px(184, y, 'trunk');
     px(192, y, 'trunk-d');
     px(200, y, 'trunk');
   }
 
-  // 3. Ствол — верхняя часть (расширенный
-  //    для соединения с ветками)
+  // 3. Trunk — upper part (wider to connect with branches)
   px(184, 320, 'trunk');
   px(192, 320, 'trunk-d');
   px(200, 320, 'trunk');
@@ -43,25 +42,24 @@ function buildTree(scene) {
 
   px(192, 288, 'trunk-d');
 
-  // 4. Ветки (все соединены со стволом)
+  // 4. Branches (all connected to the trunk)
   var branches = [
-    // Правая верхняя
+    // Top right
     [208, 300], [224, 292],
     [240, 284], [256, 276],
-    // Левая средняя (для фонаря)
+    // Middle left (holds the lantern)
     [176, 324], [160, 328],
     [144, 332], [128, 336], [112, 340],
-    // Правая нижняя
+    // Bottom right
     [208, 348], [224, 344], [240, 340],
-    // Левая верхняя
+    // Top left
     [176, 300], [160, 292], [144, 284],
   ];
   branches.forEach(function(b) {
     px(b[0], b[1], 'branch');
   });
 
-  // 5. Листья — 4 группы, каждая качается
-  //    со своей скоростью (см. tree.css)
+  // 5. Leaves — 4 groups, each swaying at its own speed (see tree.css)
   var leafGroups = [
     {
       cls: 'leaves-group',
@@ -126,14 +124,14 @@ function buildTree(scene) {
     scene.appendChild(container);
   });
 
-  // 6. Фонарь (висит на конце левой ветки)
+  // 6. Lantern (hangs at the end of the left branch)
   var lantern = document.createElement('div');
   lantern.className = 'lantern-group';
   lantern.style.position = 'absolute';
   lantern.style.left = '104px';
   lantern.style.top = '348px';
 
-  // 6a. Свечение (круглый фон за фонарём)
+  // 6a. Glow area (round background behind the lantern)
   var glowArea = document.createElement('div');
   glowArea.className = 'glow-area';
   glowArea.style.cssText =
@@ -148,28 +146,28 @@ function buildTree(scene) {
   glowArea.appendChild(glowSoft);
   lantern.appendChild(glowArea);
 
-  // 6b. Верх фонаря
+  // 6b. Lantern top
   var lTop = document.createElement('div');
   lTop.className = 'px lantern-top';
   lTop.style.cssText =
     'left:8px; top:0; width:16px; height:6px;';
   lantern.appendChild(lTop);
 
-  // 6c. Тело фонаря
+  // 6c. Lantern body
   var lBody = document.createElement('div');
   lBody.className = 'px lantern';
   lBody.style.cssText =
     'left:4px; top:6px; width:24px; height:20px;';
   lantern.appendChild(lBody);
 
-  // 6d. Свет (жёлтый квадрат)
+  // 6d. Light (yellow square)
   var lGlow = document.createElement('div');
   lGlow.className = 'px glow';
   lGlow.style.cssText =
     'left:8px; top:10px; width:16px; height:12px;';
   lantern.appendChild(lGlow);
 
-  // 6e. Низ фонаря
+  // 6e. Lantern bottom
   var lBottom = document.createElement('div');
   lBottom.className = 'px lantern-top';
   lBottom.style.cssText =
@@ -178,7 +176,7 @@ function buildTree(scene) {
 
   scene.appendChild(lantern);
 
-  // 7. Корни (расходятся от основания ствола)
+  // 7. Roots (spread from the base of the trunk)
   var roots = [
     [168, 416], [176, 412], [208, 412],
     [216, 416], [160, 420], [224, 420],

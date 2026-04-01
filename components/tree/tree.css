@@ -1,38 +1,37 @@
 /*
- * tree.css — визуальные стили дерева
+ * tree.css — visual styles for the tree
  *
- * Что делает: цвета и размеры пикселей дерева,
- *   фонарь, keyframes анимаций.
- * Подключается: в index.html через <link>.
- * Связан с:
- *   - tree.js (создаёт div'ы с этими классами)
- *   - animate.js (включает анимации через
- *     класс .playing на .scene)
+ * What it does: colors and sizes of tree pixels,
+ *   lantern, animation keyframes.
+ * Included in: index.html via <link>.
+ * Related to:
+ *   - tree.js (creates divs with these classes)
+ *   - animate.js (enables animations via
+ *     .playing class on .scene)
  *
- * Анимации по умолчанию ВЫКЛЮЧЕНЫ (статичная
- * картинка). Включаются когда animate.js
- * добавляет класс .playing на элемент .scene.
+ * Animations are OFF by default (static image).
+ * Enabled when animate.js adds .playing to .scene.
  */
 
-/* 1. Базовый пиксель — строительный блок */
+/* 1. Base pixel — building block */
 .px {
   position: absolute;
   width: 16px;
   height: 16px;
 }
 
-/* 2. Цвета ствола и веток */
+/* 2. Trunk and branch colors */
 .trunk   { background: #8B5E3C; }
 .trunk-d { background: #6B4226; }
 .branch  { background: #7A5230; }
 .root    { background: #6B4226; }
 
-/* 3. Цвета листьев (3 оттенка зелёного) */
+/* 3. Leaf colors (3 shades of green) */
 .leaf    { background: #5B8C3E; }
 .leaf-l  { background: #6EA644; }
 .leaf-d  { background: #3E6B28; }
 
-/* 4. Фонарь (выключен — серый корпус, красное стекло) */
+/* 4. Lantern (off — gray body, red glass) */
 .lantern     { background: #6B6B6B; }
 .lantern-top { background: #4A4A4A; }
 
@@ -41,7 +40,7 @@
   box-shadow: none;
 }
 
-/* При Play — корпус нагревается, огонь горит */
+/* On Play — body heats up, flame burns */
 .scene.playing .lantern     { background: #C0392B; }
 .scene.playing .lantern-top { background: #922B21; }
 .scene.playing .glow {
@@ -55,15 +54,15 @@
   border-radius: 50%;
 }
 
-/* 5. Keyframes анимаций дерева */
+/* 5. Animation keyframes */
 
-/* Покачивание листьев */
+/* Leaf sway */
 @keyframes sway {
   0%, 100% { transform: translate3d(0, 0, 0); }
   50%      { transform: translate3d(2px, 0, 0); }
 }
 
-/* Мерцание света фонаря */
+/* Lantern light flicker */
 @keyframes flicker {
   0%, 100% { opacity: 1; }
   30%      { opacity: 0.85; }
@@ -72,28 +71,28 @@
   90%      { opacity: 0.95; }
 }
 
-/* Покачивание фонаря */
+/* Lantern sway */
 @keyframes lanternSway {
   0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
   25%      { transform: translate3d(0, 0, 0) rotate(2deg); }
   75%      { transform: translate3d(0, 0, 0) rotate(-2deg); }
 }
 
-/* Пульсация свечения */
+/* Glow pulse */
 @keyframes glowPulse {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.3; }
   50%      { transform: translate3d(0, 0, 0) scale(1.1); opacity: 0.5; }
 }
 
-/* 6. Анимации объявлены сразу, но приостановлены —
-      без скачка при старте/стопе */
+/* 6. Animations declared immediately but paused —
+      no jump on start/stop */
 
 .leaves-group,
 .leaves-group-2,
 .leaves-group-3 {
-  /* Задаем полные размеры контейнерам, чтобы Safari не обрезал 
-     нулевые слои при зуме. Убрали will-change, так как он ломает
-     отображение при зуме. */
+  /* Full-size containers so Safari doesn't clip
+     zero-size layers on zoom. will-change removed
+     as it broke rendering on zoom. */
   position: absolute;
   top: 0;
   left: 0;
@@ -119,14 +118,14 @@
   animation: lanternSway 3s ease-in-out infinite paused;
 }
 
-/* Свечение скрыто по умолчанию через visibility,
-   чтобы не конфликтовать с opacity-анимациями */
+/* Glow hidden by default via visibility
+   to avoid conflicts with opacity animations */
 .glow-soft,
 .glow-area {
   visibility: hidden;
 }
 
-/* 7. Анимации запускаются классом .playing */
+/* 7. Animations triggered by .playing class */
 .scene.playing .leaves-group,
 .scene.playing .leaves-group-2,
 .scene.playing .leaves-group-3 {
@@ -137,7 +136,7 @@
   animation-play-state: running;
 }
 
-/* Свечение показывается и мерцает при playing */
+/* Glow becomes visible and flickers on playing */
 .scene.playing .glow-soft,
 .scene.playing .glow-area {
   visibility: visible;
@@ -147,7 +146,7 @@
   animation: flicker 2s ease-in-out infinite;
 }
 
-/* Ореол пульсирует при playing */
+/* Halo pulses on playing */
 .scene.playing .glow-area {
   animation:
     glowPulse 3s ease-in-out infinite;
