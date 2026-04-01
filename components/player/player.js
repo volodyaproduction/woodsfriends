@@ -68,7 +68,6 @@ function initPlayer(scene) {
       note.classList.remove('visible');
       if (audio) {
         audio.pause();
-        audio.currentTime = 0;
       }
     }
   });
