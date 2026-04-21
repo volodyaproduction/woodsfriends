@@ -71,4 +71,16 @@ function initPlayer(scene) {
       }
     }
   });
+
+  // 5. Public API для внешних модулей (игра)
+  return {
+    pauseMusic: function() {
+      if (audio) audio.pause();
+    },
+    resumeMusic: function() {
+      if (isPlaying && audio) {
+        audio.play().catch(function() {});
+      }
+    },
+  };
 }

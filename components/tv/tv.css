@@ -1,0 +1,47 @@
+/*
+ * tv.css — пиксельный ЭЛТ-телевизор
+ *
+ * Позиционирован внутри .scene справа от дерева.
+ * Построен на .px (16×16px) из tree.css.
+ * Экран мерцает текстом GAME через CSS-анимацию.
+ */
+
+/* 1. Контейнер ТВ — абсолютный внутри .scene */
+.tv-group {
+  position: absolute;
+  left: 296px;
+  top: 348px;
+  cursor: pointer;
+}
+
+/* 2. Пиксельные блоки корпуса */
+.tv-body   { background: #7a7a7a; }
+.tv-body-d { background: #5a5a5a; }
+.tv-foot   { background: #4a4a4a; }
+.tv-screen { background: #1a1a1a; }
+.tv-ant    { background: #6a6a6a; }
+
+/* 3. Текст на экране */
+.tv-label {
+  position: absolute;
+  left: 4px;
+  top: 20px;
+  width: 48px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 7px;
+  font-weight: bold;
+  color: #33ff33;
+  letter-spacing: 1px;
+  pointer-events: none;
+  animation: tvFlicker 2.4s ease-in-out infinite;
+}
+
+/* 4. Мерцание экрана */
+@keyframes tvFlicker {
+  0%, 100% { opacity: 0.9; }
+  20%       { opacity: 0.5; }
+  40%       { opacity: 0.95; }
+  60%       { opacity: 0.3; }
+  80%       { opacity: 0.85; }
+}

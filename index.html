@@ -39,6 +39,10 @@
       href="components/tree/tree.css">
 <link rel="stylesheet"
       href="components/player/player.css">
+<link rel="stylesheet"
+      href="components/tv/tv.css">
+<link rel="stylesheet"
+      href="game/game.css">
 </head>
 <body>
 
@@ -165,6 +169,9 @@
 <script src="components/tree/tree.js"></script>
 <script src="components/tree/animate.js"></script>
 <script src="components/player/player.js"></script>
+<script src="game/game.js"></script>
+<script src="game/router.js"></script>
+<script src="components/tv/tv.js"></script>
 
 <!-- Инициализация: собираем компоненты -->
 <script>
@@ -175,8 +182,11 @@
         document.getElementById('scene');
       // 1. Рисуем дерево
       buildTree(scene);
-      // 2. Создаём кнопку play/stop
-      initPlayer(scene);
+      // 2. Создаём кнопку play/stop, получаем API
+      var playerApi = initPlayer(scene);
+      // 3. Рисуем ТВ и подключаем роутер
+      buildTV(scene, playerApi);
+      initRouter(playerApi);
     }
   );
 </script>
