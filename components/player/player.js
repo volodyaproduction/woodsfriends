@@ -10,7 +10,7 @@
  *   - animate.js (startAnimation, stopAnimation —
  *     must be included before in index.html)
  *   - player.css (styles for .player-btn)
- *   - assets/music.mp3 (optional — works without it)
+ *   - assets/main.mp3 (optional — works without it)
  *
  * Exports: initPlayer(scene)
  *   scene — DOM element <div id="scene">
@@ -24,7 +24,7 @@ function initPlayer(scene) {
 
   // 2. Load audio (optional)
   try {
-    audio = new Audio('assets/music.mp3');
+    audio = new Audio('assets/main.mp3');
     audio.loop = true;
   } catch (e) {
     console.log('Audio not loaded');
