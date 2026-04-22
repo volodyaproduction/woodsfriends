@@ -1,54 +1,66 @@
 /*
  * router.js — hash-роутинг для игры
  *
- * Что делает: слушает hashchange, открывает/закрывает
- *   игру при переходах /#game ↔ /.
- *   При прямом заходе на /#game выстраивает
- *   корректный стек истории браузера.
+ * Управляет переходами /#game ↔ /.
+ * Экспортирует: openGame(), closeGame(), initRouter(playerApi)
  *
- * Экспортирует: openGame(playerApi), closeGame()
- *   (вызываются из tv.js и menu.js)
+ * Два сценария открытия игры:
+ *   а) клик по ТВ → openGame() → меняем хэш → hashchange → _showGame
+ *   б) обновление страницы на /#game → initRouter находит хэш → _showGame
+ *
+ * Сценарий б) раньше ломался из-за history.pushState, который
+ * в некоторых браузерах тригерит hashchange и мешает инициализации.
+ * Теперь история не манипулируется — просто проверяем хэш при старте.
  */
 
-/* 1. Показать игру (без изменения URL) */
-function _showGame(playerApi) {
+// 1. Сохраняем playerApi на уровне модуля —
+//    нужен в openGame() когда hashchange не срабатывает
+var _playerApi = null;
+
+/* 2. Показать игру */
+function _showGame() {
   document.title = 'Woods Friends: Game';
-  if (playerApi) playerApi.pauseMusic();
-  initGame(playerApi);
+  if (_playerApi) _playerApi.pauseMusic();
+  initGame(_playerApi);
 }
 
-/* 2. Скрыть игру (без изменения URL) */
-function _hideGame(playerApi) {
+/* 3. Скрыть игру */
+function _hideGame() {
   document.title = 'Woods Friends';
   stopGame();
-  if (playerApi) playerApi.resumeMusic();
+  if (_playerApi) _playerApi.resumeMusic();
 }
 
-/* 3. Открыть игру — меняет URL → hashchange → _showGame */
-function openGame(playerApi) {
-  location.hash = 'game';
+/* 4. Открыть игру (вызывается из tv.js) */
+function openGame() {
+  if (location.hash === '#game') {
+    // Хэш уже стоит — hashchange не сработает, вызываем напрямую
+    _showGame();
+  } else {
+    location.hash = 'game';
+  }
 }
 
-/* 4. Закрыть игру — меняет URL → hashchange → _hideGame */
+/* 5. Закрыть игру (вызывается из menu.js) */
 function closeGame() {
   location.hash = '';
 }
 
-/* 5. Инициализация роутера */
+/* 6. Инициализация */
 function initRouter(playerApi) {
-  // 5a. Слушаем hashchange
+  _playerApi = playerApi;
+
+  // 6a. Слушаем смену хэша
   window.addEventListener('hashchange', function() {
     if (location.hash === '#game') {
-      _showGame(playerApi);
+      _showGame();
     } else {
-      _hideGame(playerApi);
+      _hideGame();
     }
   });
 
-  // 5b. Прямой заход на /#game — выстраиваем стек истории
+  // 6b. Прямой заход / обновление страницы на /#game
   if (location.hash === '#game') {
-    history.replaceState(null, '', '/');
-    history.pushState(null, '', '/#game');
-    _showGame(playerApi);
+    _showGame();
   }
 }

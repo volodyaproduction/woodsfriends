@@ -1,0 +1,87 @@
+/*
+ * life.css — стили контролов Game of Life
+ */
+
+/* 1. Строка кнопок под canvas */
+.life-controls {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 0 2px;
+}
+
+/* 1a. Обёртка кнопка + подпись */
+.life-ctrl-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.life-ctrl-label {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* 2. Базовая кнопка в пиксельном стиле */
+.life-btn {
+  min-width: 40px;
+  height: 38px;
+  background: #f5f0dc;
+  border: 3px solid #2c2c2c;
+  box-shadow: 3px 3px 0 #2c2c2c;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 14px;
+  color: #1a1a1a;
+  cursor: pointer;
+  padding: 0 8px;
+  line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.life-btn:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.life-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* 3. Кнопка Play/Pause — чуть шире, с зелёным оттенком */
+.life-btn--play {
+  background: #d4f0d4;
+  min-width: 50px;
+}
+
+/* 4. Маленькие кнопки +/− скорости */
+.life-btn--sm {
+  min-width: 30px;
+  height: 34px;
+  font-size: 18px;
+  padding: 0 6px;
+}
+
+/* 5. Группа управления скоростью */
+.life-speed {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.life-speed-label {
+  display: inline-block;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: #ffffff;
+  min-width: 70px;
+  text-align: center;
+}

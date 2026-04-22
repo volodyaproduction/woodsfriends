@@ -1,10 +1,5 @@
 /*
- * game.css — оверлей и контейнер игрового canvas
- *
- * Overlay: position fixed, z-index 100,
- *   поверх всего включая .scene с её transform.
- * Canvas: 360×180px CSS, физический размер
- *   умножается на devicePixelRatio в game.js.
+ * game.css — оверлей и обёртка игрового canvas
  */
 
 /* 1. Оверлей — тёмный фон поверх сцены */
@@ -22,17 +17,15 @@
   display: flex;
 }
 
-/* 2. Обёртка: canvas + кнопка бургера над ним */
+/* 2. Обёртка: canvas + контролы + бургер */
 .game-wrapper {
   position: relative;
   transform-origin: center center;
 }
 
-/* 3. Canvas игры */
+/* 3. Canvas — размер задаётся динамически в life.js */
 .game-canvas {
   display: block;
-  width: 360px;
-  height: 180px;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }

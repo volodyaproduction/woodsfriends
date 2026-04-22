@@ -1,32 +1,25 @@
 /*
- * game.js — главный модуль игры
- *
- * Что делает: создаёт DOM оверлея и canvas,
- *   управляет масштабированием под экран,
- *   запускает/останавливает игровую музыку.
+ * game.js — оверлей игры и его жизненный цикл
  *
  * Экспортирует: initGame(playerApi), stopGame()
- *   Вызываются из router.js.
+ *   Вызываются из router.js при навигации /#game.
  *
- * Шаг 1: только оверлей, пустой canvas и музыка.
- *   Игровой цикл добавляется в шаге 2.
+ * DOM создаётся один раз; при повторном открытии
+ *   поле Game of Life сохраняет своё состояние.
  */
 
 (function() {
 
-  /* ── Состояние модуля ── */
   var overlay       = null;
   var wrapper       = null;
   var canvas        = null;
-  var gameAudio     = null;
-  var _playerApi    = null;
   var _resizeHandle = null;
 
-  /* 1. Создаём DOM один раз при первом вызове */
+  /* 1. Создать DOM один раз */
   function ensureDOM() {
     if (overlay) return;
 
-    // 1a. Оверлей
+    // 1a. Полноэкранный оверлей
     overlay = document.createElement('div');
     overlay.className = 'game-overlay';
 
@@ -34,38 +27,40 @@
     wrapper = document.createElement('div');
     wrapper.className = 'game-wrapper';
 
-    // 1c. Canvas с учётом Retina
+    // 1c. Canvas (размер устанавливает initLife)
     canvas = document.createElement('canvas');
     canvas.className = 'game-canvas';
-    var dpr = window.devicePixelRatio || 1;
-    canvas.width  = 360 * dpr;
-    canvas.height = 180 * dpr;
-
     wrapper.appendChild(canvas);
+
     overlay.appendChild(wrapper);
     document.body.appendChild(overlay);
 
-    // 1d. Загружаем игровую музыку
-    try {
-      gameAudio = new Audio('assets/game-music.mp3');
-      gameAudio.loop = true;
-    } catch (e) {
-      gameAudio = null;
-    }
+    // 1d. Меню: бургер + кнопка «Главный экран»
+    initMenu(
+      wrapper,
+      function() { pauseLife(); },
+      function() {},
+      function() { closeGame(); }
+    );
+
+    // 1e. Инициализация Game of Life
+    initLife(canvas, wrapper);
   }
 
-  /* 2. Масштабирование canvas под viewport */
+  /* 2. Масштабирование под viewport
+   *   384 = 32 клетки × 12px (ширина сетки)
+   *   488 = 384px сетка + 50px контролы + запас
+   */
   function updateScale() {
     if (!wrapper) return;
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    var scale = Math.min(vw / 360, vh / 180) * 0.9;
+    var scale = Math.min(vw / 384, vh / 488) * 0.9;
     wrapper.style.transform = 'scale(' + scale + ')';
   }
 
   /* 3. Открыть игру */
   function initGame(playerApi) {
-    _playerApi = playerApi;
     ensureDOM();
 
     // 3a. Показываем оверлей
@@ -78,26 +73,17 @@
     window.addEventListener(
       'orientationchange', _resizeHandle
     );
-
-    // 3c. Запускаем игровую музыку
-    if (gameAudio) {
-      gameAudio.currentTime = 0;
-      gameAudio.play().catch(function() {});
-    }
   }
 
   /* 4. Закрыть игру */
   function stopGame() {
     if (!overlay) return;
 
-    // 4a. Прячем оверлей
-    overlay.classList.remove('visible');
+    // 4a. Пауза симуляции (поле сохраняется)
+    destroyLife();
 
-    // 4b. Останавливаем игровую музыку
-    if (gameAudio) {
-      gameAudio.pause();
-      gameAudio.currentTime = 0;
-    }
+    // 4b. Скрываем оверлей
+    overlay.classList.remove('visible');
 
     // 4c. Снимаем слушатели resize
     if (_resizeHandle) {
@@ -109,7 +95,6 @@
     }
   }
 
-  /* 5. Экспорт в глобальный скоуп */
   window.initGame = initGame;
   window.stopGame = stopGame;
 
