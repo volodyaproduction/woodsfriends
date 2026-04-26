@@ -28,13 +28,22 @@ body {
   touch-action: manipulation;
 }
 
-.scene {
-  position: relative;
+/* Внешняя обёртка отвечает за resize-масштаб под viewport.
+   Без transition — изменения --scene-scale при resize не должны
+   проигрываться плавно. Zoom-эффект ТВ живёт на отдельной
+   внутренней обёртке (см. components/tv/tv-zoom.css). */
+.scene-resize-wrap {
   width: 400px;
   height: 560px;
   flex: 0 0 auto;
   transform-origin: top center;
   transform: scale(var(--scene-scale, 1));
+}
+
+.scene {
+  position: relative;
+  width: 400px;
+  height: 560px;
   transform-style: preserve-3d; /* Fix for 3D layers (leaves) disappearing on zoom in Safari */
 }
 

@@ -63,8 +63,12 @@
   function initGame(playerApi) {
     ensureDOM();
 
-    // 3a. Показываем оверлей
-    overlay.classList.add('visible');
+    // 3a. Показываем оверлей через rAF — иначе при первом
+    //     клике браузер не успевает применить начальный
+    //     opacity:0 и fade-in проигрывается мгновенно
+    requestAnimationFrame(function() {
+      overlay.classList.add('visible');
+    });
 
     // 3b. Масштабируем и подписываемся на resize
     updateScale();
@@ -82,8 +86,11 @@
     // 4a. Пауза симуляции (поле сохраняется)
     destroyLife();
 
-    // 4b. Скрываем оверлей
+    // 4b. Сначала fade-out оверлея (0.4s),
+    //     затем отъезд камеры — иначе zoom-out пройдёт
+    //     под чёрным фоном и его не будет видно.
     overlay.classList.remove('visible');
+    setTimeout(zoomOutTV, 400);
 
     // 4c. Снимаем слушатели resize
     if (_resizeHandle) {

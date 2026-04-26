@@ -1,0 +1,49 @@
+/*
+ * tv-zoom.css — обёртка над .scene для zoom-эффекта на ТВ
+ *
+ * Эффект «камера на кране»: не плавный фокус объектива,
+ *   а механический наезд с лёгким покачиванием по пути.
+ *   Реализовано через @keyframes с микро-translate
+ *   между фазами scale.
+ *
+ * Управление через 2 класса (см. tv-zoom.js):
+ *   .zoom-tv   — запускает наезд (1.4s)
+ *   .zoom-out  — обратный отъезд (0.6s)
+ */
+
+/* 1. Обёртка для zoom — внутри .scene-resize-wrap.
+      Layout 400×560 совпадает с .scene → координаты origin
+      попадают ровно в координаты scene без поправок. */
+.scene-zoom-wrap {
+  width: 400px;
+  height: 560px;
+  /* transform-origin = центр экрана ТВ в сцене 400×560:
+     324/400 = 81%, 376/560 ≈ 67% */
+  transform-origin: 81% 67%;
+}
+
+/* 2. Наезд — 4 фазы scale + микро-сдвиги по X/Y создают
+      ощущение, что камера едет на кране, не идеально
+      по прямой. Финальный кадр — точный фокус на ТВ
+      (translate 0). */
+@keyframes tvZoomIn {
+  0%   { transform: scale(1)   translate(0, 0); }
+  20%  { transform: scale(1.6) translate(-3px, 2px); }
+  50%  { transform: scale(2.7) translate(4px, -3px); }
+  80%  { transform: scale(4.3) translate(-2px, 1px); }
+  100% { transform: scale(5)   translate(0, 0); }
+}
+
+/* 3. Отъезд — без покачивания, чтобы быстро вернуться */
+@keyframes tvZoomOut {
+  0%   { transform: scale(5)   translate(0, 0); }
+  100% { transform: scale(1)   translate(0, 0); }
+}
+
+.scene-zoom-wrap.zoom-tv {
+  animation: tvZoomIn 1.4s ease-in-out forwards;
+}
+
+.scene-zoom-wrap.zoom-out {
+  animation: tvZoomOut 0.6s ease-in forwards;
+}

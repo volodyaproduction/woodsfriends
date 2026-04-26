@@ -42,6 +42,8 @@
 <link rel="stylesheet"
       href="components/tv/tv.css">
 <link rel="stylesheet"
+      href="components/tv/tv-zoom.css">
+<link rel="stylesheet"
       href="game/game.css">
 <link rel="stylesheet"
       href="game/menu/menu.css">
@@ -178,6 +180,7 @@
 <script src="game/life.js"></script>
 <script src="game/game.js"></script>
 <script src="game/router.js"></script>
+<script src="components/tv/tv-zoom.js"></script>
 <script src="components/tv/tv.js"></script>
 
 <!-- Инициализация: собираем компоненты -->
@@ -187,11 +190,13 @@
     function() {
       var scene =
         document.getElementById('scene');
-      // 1. Рисуем дерево
+      // 1. Оборачиваем сцену для zoom-эффекта на ТВ
+      wrapScene(scene);
+      // 2. Рисуем дерево
       buildTree(scene);
-      // 2. Создаём кнопку play/stop, получаем API
+      // 3. Создаём кнопку play/stop, получаем API
       var playerApi = initPlayer(scene);
-      // 3. Рисуем ТВ и подключаем роутер
+      // 4. Рисуем ТВ и подключаем роутер
       buildTV(scene, playerApi);
       initRouter(playerApi);
     }

@@ -2,9 +2,11 @@
  * game.css — оверлей и обёртка игрового canvas
  */
 
-/* 1. Оверлей — тёмный фон поверх сцены */
+/* 1. Оверлей — тёмный фон поверх сцены
+      Видимость через opacity (а не display), чтобы работал
+      transition синхронно с zoom-камерой на ТВ. */
 .game-overlay {
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
@@ -12,10 +14,14 @@
   justify-content: center;
   align-items: center;
   touch-action: manipulation;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease-in;
 }
 
 .game-overlay.visible {
-  display: flex;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* 2. Обёртка: canvas + контролы + бургер */

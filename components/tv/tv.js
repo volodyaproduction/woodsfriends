@@ -62,9 +62,12 @@ function buildTV(scene, playerApi) {
   px(8,  80, 'tv-foot');
   px(40, 80, 'tv-foot');
 
-  // 8. Клик — открываем игру
+  // 8. Клик — сначала наезд камеры (1.4s),
+  //    затем запускается игра. Длительность совпадает
+  //    с keyframes tvZoomIn в tv-zoom.css.
   tv.addEventListener('click', function() {
-    openGame();
+    zoomInTV();
+    setTimeout(openGame, 1400);
   });
 
   scene.appendChild(tv);
