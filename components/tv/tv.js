@@ -55,7 +55,7 @@ function buildTV(scene, playerApi) {
   // 6. Текст «GAME» на экране
   var label = document.createElement('div');
   label.className = 'tv-label';
-  label.textContent = 'GAME';
+  label.innerHTML = 'GAME<br>LIFE';
   tv.appendChild(label);
 
   // 7. Ножки (2 пикселя)
