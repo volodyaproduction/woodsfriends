@@ -319,12 +319,24 @@
     _lblGen.textContent = 'Gen: 0';
     playItem.appendChild(_lblGen);
 
-    bar.appendChild(makeItem(_btnBack,   'Step Back'));
+    bar.appendChild(makeItem(_btnBack, 'Step Back'));
     bar.appendChild(playItem);
-    bar.appendChild(makeItem(btnStep,    'Step Fwd'));
-    bar.appendChild(makeItem(btnReset,   'Reset'));
-    bar.appendChild(makeItem(speedGroup, 'Speed'));
-    wrapper.appendChild(bar);
+    bar.appendChild(makeItem(btnStep,  'Step Fwd'));
+
+    if (window.innerWidth <= 600) {
+      // На мобилке: Reset + Speed во 2-й ряд
+      wrapper.appendChild(bar);
+      var bar2 = document.createElement('div');
+      bar2.className = 'life-controls life-controls--row2';
+      bar2.appendChild(makeItem(btnReset,   'Reset'));
+      bar2.appendChild(makeItem(speedGroup, 'Speed'));
+      wrapper.appendChild(bar2);
+    } else {
+      // На десктопе: всё в одном ряду
+      bar.appendChild(makeItem(btnReset,   'Reset'));
+      bar.appendChild(makeItem(speedGroup, 'Speed'));
+      wrapper.appendChild(bar);
+    }
 
     updateButtons();
   }
@@ -452,8 +464,8 @@
 
     var subtitle = document.createElement('div');
     subtitle.className = 'life-subtitle';
-    subtitle.textContent =
-      '1. draw cells  →  2. press ▶︎ to run';
+    subtitle.innerHTML =
+      '1. draw cells<br>2. press &#9654;&#65038; to run';
 
     header.appendChild(label);
     header.appendChild(subtitle);

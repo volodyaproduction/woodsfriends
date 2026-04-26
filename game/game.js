@@ -49,13 +49,17 @@
 
   /* 2. Масштабирование под viewport
    *   384 = 32 клетки × 12px (ширина сетки)
-   *   488 = 384px сетка + 50px контролы + запас
+   *   При align-items:center шапка (top:-68px) симметрично
+   *   учитывается: budget = wrapperH + 2 * headerH (68).
+   *   desktop: (384+60)  + 2×68 = 580
+   *   mobile:  (384+115) + 2×68 = 635
    */
   function updateScale() {
     if (!wrapper) return;
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    var scale = Math.min(vw / 384, vh / 488) * 0.9;
+    var budget = vw <= 600 ? 635 : 580;
+    var scale = Math.min(vw / 384, vh / budget) * 0.9;
     wrapper.style.transform = 'scale(' + scale + ')';
   }
 
