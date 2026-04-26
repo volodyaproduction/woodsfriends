@@ -117,3 +117,28 @@
   color: rgba(255, 255, 255, 0.5);
   text-transform: lowercase;
 }
+
+/* 7. Кнопка переключения размера сетки */
+.life-size-btn {
+  position: absolute;
+  top: -48px;
+  right: 38px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0 6px;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.life-size-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+}

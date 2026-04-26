@@ -230,7 +230,7 @@
       _running ? '⏸︎' : '▶︎';
     _btnBack.disabled    = _history.length === 0;
     _lblSpeed.textContent = SPEEDS[_speedIdx] + ' gen/sec';
-    _lblGen.textContent  = 'Generation: ' + _gen;
+    _lblGen.textContent  = 'Gen: ' + _gen;
   }
 
   // 13a. Вспомогательная: обернуть элемент с подписью снизу
@@ -331,6 +331,11 @@
 
   // 15. Инициализация — вызывается один раз из game.js
   function initLife(canvas, wrapper) {
+    // Мобильные: 16×16 по умолчанию (CSS-размер canvas не меняется)
+    if (window.innerWidth <= 600) {
+      COLS = 16; ROWS = 16; CELL = 24;
+    }
+
     _canvas = canvas;
     _dpr    = window.devicePixelRatio || 1;
     var W   = COLS * CELL;
@@ -388,7 +393,19 @@
     header.appendChild(subtitle);
     wrapper.appendChild(header);
 
-    // 15f. Контролы и начальный рендер
+    // 15f. Кнопка переключения размера сетки
+    var sizeBtn = document.createElement('button');
+    sizeBtn.className = 'life-size-btn';
+    sizeBtn.setAttribute('aria-label', 'Toggle grid size');
+    sizeBtn.textContent = COLS + '\xD7' + ROWS;
+    sizeBtn.addEventListener('click', function() {
+      var newSize = COLS === 32 ? 16 : 32;
+      resizeGrid(newSize);
+      sizeBtn.textContent = COLS + '\xD7' + ROWS;
+    });
+    wrapper.appendChild(sizeBtn);
+
+    // 15g. Контролы и начальный рендер
     buildControls(wrapper);
     render();
   }
@@ -418,9 +435,34 @@
     updateButtons();
   }
 
+  // 18. Изменить размер сетки (CSS-размер canvas сохраняется)
+  function resizeGrid(newSize) {
+    // 1. Стоп и новые параметры
+    setRunning(false);
+    COLS = newSize;
+    ROWS = newSize;
+    CELL = newSize === 16 ? 24 : 12;
+
+    // 2. Пересчитать canvas
+    var W = COLS * CELL;
+    var H = ROWS * CELL;
+    _canvas.width        = W * _dpr;
+    _canvas.height       = H * _dpr;
+    _canvas.style.width  = W + 'px';
+    _canvas.style.height = H + 'px';
+
+    // 3. Сброс состояния
+    _grid    = new Uint8Array(COLS * ROWS);
+    _history = [];
+    _gen     = 0;
+    render();
+    updateButtons();
+  }
+
   window.initLife    = initLife;
   window.destroyLife = destroyLife;
   window.loadPattern = loadPattern;
+  window.resizeGrid  = resizeGrid;
   window.pauseLife   = function() { setRunning(false); };
 
 })();
