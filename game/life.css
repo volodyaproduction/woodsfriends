@@ -118,11 +118,20 @@
   text-transform: lowercase;
 }
 
-/* 7. Кнопка переключения размера сетки */
-.life-size-btn {
+/* 7. Враппер угловых кнопок (GIF + размер) */
+.life-corner {
   position: absolute;
   top: -48px;
   right: 38px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 7a. Общие стили для обеих угловых кнопок */
+.life-size-btn,
+.life-gif-btn {
   height: 44px;
   display: flex;
   align-items: center;
@@ -139,6 +148,12 @@
   -webkit-user-select: none;
 }
 
-.life-size-btn:hover {
+.life-size-btn:hover,
+.life-gif-btn:hover:not(:disabled) {
   color: rgba(255, 255, 255, 0.8);
+}
+
+.life-gif-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
 }

@@ -42,8 +42,9 @@
   var COLOR_ALIVE = '#7EC87E';
   var COLOR_DEAD  = '#1a1a2e';
   var COLOR_GRID  = '#252545';
-  var MAX_HISTORY = 100;
-  var SPEEDS      = [1, 2, 5, 10, 20]; // поколений/сек
+  var MAX_HISTORY  = 1000;
+  var SPEEDS       = [1, 2, 5, 10, 20]; // поколений/сек
+  var EXPORT_CELL  = 4;  // px на клетку в GIF (128×128 для сетки 32×32)
 
   // 2. Состояние
   var _canvas   = null;
@@ -61,6 +62,7 @@
   // 3. Ссылки на кнопки UI
   var _btnPlay  = null;
   var _btnBack  = null;
+  var _btnGif   = null;
   var _lblSpeed = null;
   var _lblGen   = null;
   var _gen      = 0;
@@ -226,11 +228,11 @@
   // 13. Обновить визуальное состояние кнопок
   function updateButtons() {
     if (!_btnPlay) return;
-    _btnPlay.textContent =
-      _running ? '⏸︎' : '▶︎';
-    _btnBack.disabled    = _history.length === 0;
+    _btnPlay.textContent  = _running ? '⏸︎' : '▶︎';
+    _btnBack.disabled     = _history.length === 0;
     _lblSpeed.textContent = SPEEDS[_speedIdx] + ' gen/sec';
-    _lblGen.textContent  = 'Gen: ' + _gen;
+    _lblGen.textContent   = 'Gen: ' + _gen;
+    if (_btnGif) _btnGif.disabled = _gen < 10;
   }
 
   // 13a. Вспомогательная: обернуть элемент с подписью снизу
@@ -327,6 +329,70 @@
     updateButtons();
   }
 
+  /* ─── GIF экспорт ─── */
+
+  // 14g. Преобразовать снимок поля в пиксельные индексы палитры
+  //   Граница клетки (pr=0 или pc=0) = 0 (сетка),
+  //   внутренность = 1 (мёртвая) или 2 (живая).
+  function renderFrameToPixels(grid) {
+    var EW = COLS * EXPORT_CELL;
+    var EH = ROWS * EXPORT_CELL;
+    var px = new Uint8Array(EW * EH);  // 0 по умолчанию = сетка
+
+    for (var r = 0; r < ROWS; r++) {
+      for (var c = 0; c < COLS; c++) {
+        var color = grid[r * COLS + c] ? 2 : 1;
+        var bx    = c * EXPORT_CELL;
+        var by    = r * EXPORT_CELL;
+        for (var pr = 0; pr < EXPORT_CELL; pr++) {
+          for (var pc = 0; pc < EXPORT_CELL; pc++) {
+            if (pr !== 0 && pc !== 0) {
+              px[(by + pr) * EW + (bx + pc)] = color;
+            }
+          }
+        }
+      }
+    }
+    return px;
+  }
+
+  // 14h. Экспортировать анимацию в GIF и скачать
+  function exportGIF() {
+    // 1. Snapshot состояния (защита от шагов во время генерации)
+    var snapHistory = _history.slice();
+    var snapGrid    = new Uint8Array(_grid);
+    var genNum      = _gen;
+    var delayMs     = Math.round(1000 / SPEEDS[_speedIdx]);
+
+    // 2. Блокируем кнопку и показываем прогресс
+    _btnGif.disabled    = true;
+    _btnGif.textContent = '...';
+
+    // 3. Даём браузеру отрисовать изменение кнопки
+    setTimeout(function() {
+      var allSnapshots = snapHistory.concat([snapGrid]);
+      var EW = COLS * EXPORT_CELL;
+      var EH = ROWS * EXPORT_CELL;
+
+      // 4. Рендерим каждый снимок в пиксели
+      var frames = allSnapshots.map(renderFrameToPixels);
+
+      // 5. Кодируем GIF и скачиваем
+      var gif  = encodeAnimatedGIF(frames, EW, EH, delayMs);
+      var blob = new Blob([gif], { type: 'image/gif' });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'life-gen-' + genNum + '.gif';
+      a.click();
+      URL.revokeObjectURL(url);
+
+      // 6. Восстанавливаем кнопку
+      _btnGif.textContent = '⬇ GIF';
+      _btnGif.disabled    = _gen < 10;
+    }, 16);
+  }
+
   /* ─── Публичный API ─── */
 
   // 15. Инициализация — вызывается один раз из game.js
@@ -393,7 +459,17 @@
     header.appendChild(subtitle);
     wrapper.appendChild(header);
 
-    // 15f. Кнопка переключения размера сетки
+    // 15f. Угловые кнопки: GIF + размер сетки
+    var corner = document.createElement('div');
+    corner.className = 'life-corner';
+
+    _btnGif = document.createElement('button');
+    _btnGif.className   = 'life-gif-btn';
+    _btnGif.textContent = '⬇ GIF';
+    _btnGif.disabled    = true;
+    _btnGif.addEventListener('click', exportGIF);
+    corner.appendChild(_btnGif);
+
     var sizeBtn = document.createElement('button');
     sizeBtn.className = 'life-size-btn';
     sizeBtn.setAttribute('aria-label', 'Toggle grid size');
@@ -403,7 +479,9 @@
       resizeGrid(newSize);
       sizeBtn.textContent = COLS + '\xD7' + ROWS;
     });
-    wrapper.appendChild(sizeBtn);
+    corner.appendChild(sizeBtn);
+
+    wrapper.appendChild(corner);
 
     // 15g. Контролы и начальный рендер
     buildControls(wrapper);
