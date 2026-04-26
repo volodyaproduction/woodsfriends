@@ -11,6 +11,7 @@
   z-index: 100;
   justify-content: center;
   align-items: center;
+  touch-action: manipulation;
 }
 
 .game-overlay.visible {

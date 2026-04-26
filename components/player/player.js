@@ -40,7 +40,7 @@ function initPlayer(scene) {
 
   var btn = document.createElement('button');
   btn.className = 'player-btn';
-  btn.innerHTML = '&#9654; Play';
+  btn.innerHTML = '&#9654;&#xFE0E; Play';
   btn.setAttribute('aria-label', 'Play/Stop');
 
   wrap.appendChild(note);
@@ -54,7 +54,7 @@ function initPlayer(scene) {
     if (isPlaying) {
       // 4a. Start
       startAnimation(scene);
-      btn.innerHTML = '&#9632; Stop';
+      btn.innerHTML = '&#9632;&#xFE0E; Stop';
       btn.classList.add('active');
       note.classList.add('visible');
       if (audio) {
@@ -63,7 +63,7 @@ function initPlayer(scene) {
     } else {
       // 4b. Stop
       stopAnimation(scene);
-      btn.innerHTML = '&#9654; Play';
+      btn.innerHTML = '&#9654;&#xFE0E; Play';
       btn.classList.remove('active');
       note.classList.remove('visible');
       if (audio) {

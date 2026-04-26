@@ -21,10 +21,10 @@
 
 .life-ctrl-label {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 9px;
+  font-size: 8px;
   color: rgba(255, 255, 255, 0.55);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   white-space: nowrap;
 }
 
@@ -80,8 +80,40 @@
 .life-speed-label {
   display: inline-block;
   font-family: 'Courier New', Courier, monospace;
-  font-size: 13px;
+  font-size: 11px;
   color: #ffffff;
-  min-width: 70px;
+  min-width: 72px;
   text-align: center;
+}
+
+/* 6. Шапка над полем */
+.life-header {
+  position: absolute;
+  top: -48px;
+  left: 0;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.life-title {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+}
+
+.life-subtitle {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: lowercase;
 }

@@ -109,6 +109,10 @@
     figuresBtn.className   = 'game-menu-btn';
     figuresBtn.textContent = 'Figure Examples';
 
+    var aboutBtn = document.createElement('button');
+    aboutBtn.className   = 'game-menu-btn';
+    aboutBtn.textContent = 'About';
+
     var homeBtn = document.createElement('button');
     homeBtn.className   = 'game-menu-btn';
     homeBtn.textContent = 'Main Screen';
@@ -116,6 +120,7 @@
     card.appendChild(title);
     card.appendChild(closeBtn);
     card.appendChild(figuresBtn);
+    card.appendChild(aboutBtn);
     card.appendChild(homeBtn);
 
     /* 4. Карточка Figure Examples */
@@ -136,8 +141,14 @@
     exTitle.className   = 'game-menu-title';
     exTitle.textContent = 'FIGURE EXAMPLES';
 
+    var exCloseBtn = document.createElement('button');
+    exCloseBtn.className = 'game-menu-close game-ex-close-btn';
+    exCloseBtn.textContent = '×';
+    exCloseBtn.setAttribute('aria-label', 'Close menu');
+
     exHeader.appendChild(backBtn);
     exHeader.appendChild(exTitle);
+    exHeader.appendChild(exCloseBtn);
     exCard.appendChild(exHeader);
 
     // 4b. Секции паттернов
@@ -185,14 +196,139 @@
       exCard.appendChild(section);
     });
 
+    /* 5. Карточка About */
+    var aboutCard = document.createElement('div');
+    aboutCard.className    = 'game-menu-card game-examples-card';
+    aboutCard.style.display = 'none';
+
+    // 5a. Шапка
+    var aboutHeader = document.createElement('div');
+    aboutHeader.className = 'game-examples-header';
+
+    var aboutBackBtn = document.createElement('button');
+    aboutBackBtn.className = 'game-menu-close game-back-btn';
+    aboutBackBtn.textContent = '←';
+    aboutBackBtn.setAttribute('aria-label', 'Back');
+
+    var aboutTitle = document.createElement('p');
+    aboutTitle.className   = 'game-menu-title';
+    aboutTitle.textContent = 'ABOUT';
+
+    var aboutCloseBtn = document.createElement('button');
+    aboutCloseBtn.className = 'game-menu-close game-ex-close-btn';
+    aboutCloseBtn.textContent = '×';
+    aboutCloseBtn.setAttribute('aria-label', 'Close menu');
+
+    aboutHeader.appendChild(aboutBackBtn);
+    aboutHeader.appendChild(aboutTitle);
+    aboutHeader.appendChild(aboutCloseBtn);
+    aboutCard.appendChild(aboutHeader);
+
+    // 5b. Секция: название и автор
+    var secIntro = document.createElement('div');
+    secIntro.className = 'game-pattern-section';
+
+    var introName = document.createElement('p');
+    introName.className   = 'game-pattern-name';
+    introName.textContent = "Conway's Game of Life";
+
+    var introDesc = document.createElement('p');
+    introDesc.className   = 'game-pattern-desc';
+    introDesc.textContent =
+      'A zero-player game devised by mathematician ' +
+      'John Horton Conway in 1970. The evolution is ' +
+      'determined entirely by the initial state — ' +
+      'no further input is needed.';
+
+    var introLink = document.createElement('a');
+    introLink.className   = 'game-pattern-link';
+    introLink.href        =
+      'https://en.wikipedia.org/wiki/' +
+      'Conway%27s_Game_of_Life';
+    introLink.target      = '_blank';
+    introLink.rel         = 'noopener noreferrer';
+    introLink.textContent = 'Wikipedia →';
+
+    secIntro.appendChild(introName);
+    secIntro.appendChild(introDesc);
+    secIntro.appendChild(introLink);
+    aboutCard.appendChild(secIntro);
+
+    // 5c. Секция: начальное состояние
+    var secState = document.createElement('div');
+    secState.className = 'game-pattern-section';
+
+    var stateName = document.createElement('p');
+    stateName.className   = 'game-pattern-name';
+    stateName.textContent = 'Initial State';
+
+    var stateDesc = document.createElement('p');
+    stateDesc.className   = 'game-pattern-desc';
+    stateDesc.textContent =
+      'You draw the starting pattern on the grid. ' +
+      'This is the initial state from which the ' +
+      'simulation evolves autonomously.';
+
+    secState.appendChild(stateName);
+    secState.appendChild(stateDesc);
+    aboutCard.appendChild(secState);
+
+    // 5d. Секция: поколение
+    var secGen = document.createElement('div');
+    secGen.className = 'game-pattern-section';
+
+    var genName = document.createElement('p');
+    genName.className   = 'game-pattern-name';
+    genName.textContent = 'Generation';
+
+    var genDesc = document.createElement('p');
+    genDesc.className   = 'game-pattern-desc';
+    genDesc.textContent =
+      'Each step of the simulation is called a ' +
+      'generation. All cells update simultaneously ' +
+      'based on the rules below.';
+
+    secGen.appendChild(genName);
+    secGen.appendChild(genDesc);
+    aboutCard.appendChild(secGen);
+
+    // 5e. Секция: правила
+    var secRules = document.createElement('div');
+    secRules.className = 'game-pattern-section';
+
+    var rulesName = document.createElement('p');
+    rulesName.className   = 'game-pattern-name';
+    rulesName.textContent = 'Rules';
+
+    var RULES = [
+      'A live cell with fewer than 2 neighbours dies' +
+        ' — underpopulation.',
+      'A live cell with 2 or 3 neighbours survives.',
+      'A live cell with more than 3 neighbours dies' +
+        ' — overpopulation.',
+      'A dead cell with exactly 3 neighbours' +
+        ' becomes alive — reproduction.'
+    ];
+
+    secRules.appendChild(rulesName);
+    RULES.forEach(function(text) {
+      var p = document.createElement('p');
+      p.className   = 'game-about-rule';
+      p.textContent = '• ' + text;
+      secRules.appendChild(p);
+    });
+    aboutCard.appendChild(secRules);
+
     backdrop.appendChild(card);
     backdrop.appendChild(exCard);
+    backdrop.appendChild(aboutCard);
     document.body.appendChild(backdrop);
 
-    /* 5. Открыть / закрыть меню */
+    /* 6. Открыть / закрыть меню */
     function openMenu() {
-      card.style.display    = '';
-      exCard.style.display  = 'none';
+      card.style.display      = '';
+      exCard.style.display    = 'none';
+      aboutCard.style.display = 'none';
       backdrop.classList.add('visible');
       onPause();
     }
@@ -202,20 +338,36 @@
       onResume();
     }
 
-    /* 6. Обработчики */
+    /* 7. Обработчики */
     burger.addEventListener('click', openMenu);
 
     closeBtn.addEventListener('click', closeMenu);
 
     figuresBtn.addEventListener('click', function() {
-      card.style.display    = 'none';
-      exCard.style.display  = '';
+      card.style.display      = 'none';
+      exCard.style.display    = '';
+      aboutCard.style.display = 'none';
     });
 
     backBtn.addEventListener('click', function() {
       exCard.style.display = 'none';
       card.style.display   = '';
     });
+
+    exCloseBtn.addEventListener('click', closeMenu);
+
+    aboutBtn.addEventListener('click', function() {
+      card.style.display      = 'none';
+      exCard.style.display    = 'none';
+      aboutCard.style.display = '';
+    });
+
+    aboutBackBtn.addEventListener('click', function() {
+      aboutCard.style.display = 'none';
+      card.style.display      = '';
+    });
+
+    aboutCloseBtn.addEventListener('click', closeMenu);
 
     homeBtn.addEventListener('click', function() {
       backdrop.classList.remove('visible');

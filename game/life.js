@@ -141,7 +141,7 @@
     _speedIdx = Math.max(
       0, Math.min(SPEEDS.length - 1, _speedIdx + delta)
     );
-    _lblSpeed.textContent = SPEEDS[_speedIdx] + ' gen/s';
+    _lblSpeed.textContent = SPEEDS[_speedIdx] + ' gen/sec';
     if (_running) {
       clearInterval(_timerId);
       var ms = Math.round(1000 / SPEEDS[_speedIdx]);
@@ -175,6 +175,7 @@
         );
       }
     }
+
   }
 
   /* ─── Ввод ─── */
@@ -225,10 +226,11 @@
   // 13. Обновить визуальное состояние кнопок
   function updateButtons() {
     if (!_btnPlay) return;
-    _btnPlay.textContent = _running ? '⏸' : '▶';
+    _btnPlay.textContent =
+      _running ? '⏸︎' : '▶︎';
     _btnBack.disabled    = _history.length === 0;
-    _lblSpeed.textContent = SPEEDS[_speedIdx] + ' gen/s';
-    _lblGen.textContent  = 'Gen: ' + _gen;
+    _lblSpeed.textContent = SPEEDS[_speedIdx] + ' gen/sec';
+    _lblGen.textContent  = 'Generation: ' + _gen;
   }
 
   // 13a. Вспомогательная: обернуть элемент с подписью снизу
@@ -293,7 +295,7 @@
 
     _lblSpeed = document.createElement('span');
     _lblSpeed.className   = 'life-speed-label';
-    _lblSpeed.textContent = SPEEDS[_speedIdx] + ' gen/s';
+    _lblSpeed.textContent = SPEEDS[_speedIdx] + ' gen/sec';
 
     var btnFast = document.createElement('button');
     btnFast.className   = 'life-btn life-btn--sm';
@@ -369,7 +371,24 @@
       }
     }
 
-    // 15e. Контролы и начальный рендер
+    // 15e. Шапка над полем: название + подсказка
+    var header = document.createElement('div');
+    header.className = 'life-header';
+
+    var label = document.createElement('div');
+    label.className = 'life-title';
+    label.textContent = 'GAME: LIFE';
+
+    var subtitle = document.createElement('div');
+    subtitle.className = 'life-subtitle';
+    subtitle.textContent =
+      '1. draw cells  →  2. press ▶︎ to run';
+
+    header.appendChild(label);
+    header.appendChild(subtitle);
+    wrapper.appendChild(header);
+
+    // 15f. Контролы и начальный рендер
     buildControls(wrapper);
     render();
   }

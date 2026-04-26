@@ -5,10 +5,10 @@
 /* 1. Кнопка-бургер */
 .game-burger {
   position: absolute;
-  top: -36px;
+  top: -48px;
   right: 0;
   width: 32px;
-  height: 32px;
+  height: 44px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -150,6 +150,23 @@
 .game-back-btn {
   position: static;
   flex-shrink: 0;
+}
+
+/* 9a. Кнопка × в шапке Figure Examples / About */
+.game-ex-close-btn {
+  position: static;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* 16. Строка правила в About */
+.game-about-rule {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 10px;
+  color: #3a3020;
+  line-height: 1.6;
+  margin: 0 0 6px;
+  padding-left: 4px;
 }
 
 /* 10. Секция одного паттерна */
