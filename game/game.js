@@ -14,6 +14,7 @@
   var wrapper       = null;
   var canvas        = null;
   var _resizeHandle = null;
+  var _vvHandle     = null;
 
   /* 1. Создать DOM один раз */
   function ensureDOM() {
@@ -49,14 +50,14 @@
 
   /* 2. Масштабирование под viewport
    *
-   *   Проблема: flex центрирует только wrapper, не зная о шапке
+   *   Проблема A: flex центрирует только wrapper, не зная о шапке
    *   (top:-68px) — контент визуально уезжает вверх.
    *
-   *   Решение:
-   *   1. scale считается так, чтобы весь контент (wrapper + шапка)
-   *      влезал в экран с отступом pad.
-   *   2. translateY(OVERHANG*scale/2) компенсирует смещение:
-   *      центр (wrapper + шапка) совпадает с центром overlay.
+   *   Проблема B: window.innerHeight на iOS Safari возвращает
+   *   «большую» высоту, игнорируя браузерный chrome и баннеры.
+   *   Решение — подгонять overlay под window.visualViewport,
+   *   чтобы flex-центрирование происходило внутри реально
+   *   видимой области.
    *
    *   Константы из CSS:
    *     canvas = 384px (32×12 и 16×24 дают одинаковый результат)
@@ -65,10 +66,32 @@
    *
    *   На мобильном overlay имеет padding-top:72px — вычитаем из availH.
    */
-  function updateScale() {
+
+  /* 2a. Подгоняем overlay под реально видимую область */
+  function applyViewport() {
+    var vv  = window.visualViewport;
+    var w   = vv ? vv.width      : window.innerWidth;
+    var h   = vv ? vv.height     : window.innerHeight;
+    var top = vv ? vv.offsetTop  : 0;
+    var lft = vv ? vv.offsetLeft : 0;
+
+    // position: fixed + inset:0 — сбрасываем right/bottom,
+    // чтобы они не конфликтовали с явными width/height
+    overlay.style.top    = top + 'px';
+    overlay.style.left   = lft + 'px';
+    overlay.style.width  = w   + 'px';
+    overlay.style.height = h   + 'px';
+    overlay.style.right  = 'auto';
+    overlay.style.bottom = 'auto';
+
+    updateScale(w, h);
+  }
+
+  /* 2b. Масштаб wrapper'а внутри overlay */
+  function updateScale(vw, vh) {
     if (!wrapper) return;
-    var vw = window.innerWidth;
-    var vh = window.innerHeight;
+    vw = vw || window.innerWidth;
+    vh = vh || window.innerHeight;
     var isMobile = vw <= 600;
 
     // 1. Размеры контента из CSS-констант
@@ -103,12 +126,22 @@
     });
 
     // 3b. Масштабируем и подписываемся на resize
-    updateScale();
-    _resizeHandle = updateScale;
+    applyViewport();
+    _resizeHandle = applyViewport;
     window.addEventListener('resize', _resizeHandle);
     window.addEventListener(
       'orientationchange', _resizeHandle
     );
+
+    // 3c. visualViewport: точный размер видимой области на iOS
+    var vv = window.visualViewport;
+    if (vv) {
+      _vvHandle = function() {
+        requestAnimationFrame(applyViewport);
+      };
+      vv.addEventListener('resize', _vvHandle);
+      vv.addEventListener('scroll', _vvHandle);
+    }
   }
 
   /* 4. Закрыть игру */
@@ -132,6 +165,20 @@
       );
       _resizeHandle = null;
     }
+
+    // 4d. Снимаем слушатели visualViewport и сбрасываем стили
+    var vv = window.visualViewport;
+    if (vv && _vvHandle) {
+      vv.removeEventListener('resize', _vvHandle);
+      vv.removeEventListener('scroll', _vvHandle);
+      _vvHandle = null;
+    }
+    overlay.style.top    = '';
+    overlay.style.left   = '';
+    overlay.style.width  = '';
+    overlay.style.height = '';
+    overlay.style.right  = '';
+    overlay.style.bottom = '';
   }
 
   window.initGame = initGame;
