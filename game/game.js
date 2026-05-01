@@ -95,13 +95,21 @@
     var isMobile = vw <= 600;
 
     // 1. Размеры контента из CSS-констант
-    var CTRL_H   = isMobile ? 115 : 60;
+    //    CTRL_H: 2 ряда кнопок + подписи на мобиле (~84 + ~76 = 160px)
+    var CTRL_H   = isMobile ? 160 : 60;
     var wrapperH = 384 + CTRL_H;
     var OVERHANG = 68;
 
-    // 2. Масштаб: весь контент (wrapper + шапка) должен влезть
-    var pad    = isMobile ? 0 : 16;
-    var availH = isMobile ? vh - 72 : vh;
+    // 2. Реальные отступы overlay (учитывает env(safe-area-inset-bottom))
+    var cs      = getComputedStyle(overlay);
+    var padTop  = parseFloat(cs.paddingTop)    || 0;
+    var padBot  = parseFloat(cs.paddingBottom) || 0;
+
+    // 3. Масштаб: весь контент должен влезть в реально доступную высоту
+    //    BOTTOM_GAP — дополнительный зазор между кнопками и панелью браузера
+    var pad        = isMobile ? 0 : 16;
+    var BOTTOM_GAP = isMobile ? 20 : 0;
+    var availH     = isMobile ? vh - padTop - padBot - BOTTOM_GAP : vh;
     var scale  = Math.min(
       (vw - 2 * pad) / 384,
       (availH - 2 * pad) / (wrapperH + OVERHANG)
