@@ -17,11 +17,11 @@
 .scene-zoom-wrap {
   width: 400px;
   height: 560px;
-  /* transform-origin вычислен так, чтобы при scale(5) центр ТВ
+  /* transform-origin вычислен так, чтобы при scale(3.5) центр ТВ
      (324, 376) оказался ровно в центре сцены (200, 280):
-     ox = (5·324 - 200) / 4 = 355px
-     oy = (5·376 - 280) / 4 = 400px */
-  transform-origin: 355px 400px;
+     ox = (3.5·324 - 200) / 2.5 = 373.6px
+     oy = (3.5·376 - 280) / 2.5 = 414.4px */
+  transform-origin: 373.6px 414.4px;
 }
 
 /* 2. Наезд — 4 фазы scale + микро-сдвиги по X/Y создают
@@ -30,15 +30,15 @@
       (translate 0). */
 @keyframes tvZoomIn {
   0%   { transform: scale(1)   translate(0, 0); }
-  20%  { transform: scale(1.6) translate(-3px, 2px); }
-  50%  { transform: scale(2.7) translate(4px, -3px); }
-  80%  { transform: scale(4.3) translate(-2px, 1px); }
-  100% { transform: scale(5)   translate(0, 0); }
+  20%  { transform: scale(1.4) translate(-3px, 2px); }
+  50%  { transform: scale(2.1) translate(4px, -3px); }
+  80%  { transform: scale(3.1) translate(-2px, 1px); }
+  100% { transform: scale(3.5) translate(0, 0); }
 }
 
 /* 3. Отъезд — без покачивания, чтобы быстро вернуться */
 @keyframes tvZoomOut {
-  0%   { transform: scale(5)   translate(0, 0); }
+  0%   { transform: scale(3.5) translate(0, 0); }
   100% { transform: scale(1)   translate(0, 0); }
 }
 
