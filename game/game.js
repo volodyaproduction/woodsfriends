@@ -51,7 +51,7 @@
   /* 2. Масштабирование под viewport
    *
    *   Проблема A: flex центрирует только wrapper, не зная о шапке
-   *   (top:-68px) — контент визуально уезжает вверх.
+   *   — контент визуально уезжает вверх.
    *
    *   Проблема B: window.innerHeight на iOS Safari возвращает
    *   «большую» высоту, игнорируя браузерный chrome и баннеры.
@@ -59,12 +59,9 @@
    *   чтобы flex-центрирование происходило внутри реально
    *   видимой области.
    *
-   *   Константы из CSS:
-   *     canvas = 384px (32×12 и 16×24 дают одинаковый результат)
-   *     CTRL_H: desktop — 1 ряд кнопок ≈ 60px; mobile — 2 ряда ≈ 115px
-   *     OVERHANG = 68px (top:-68px в life.css и menu.css)
-   *
-   *   На мобильном overlay имеет padding-top:72px — вычитаем из availH.
+   *   Текущий подход: измеряем реальные размеры wrapper (canvas + контролы
+   *   + padding-top под шапку) и подбираем scale под доступные vw/vh с учётом
+   *   padding overlay (safe-area).
    */
 
   /* 2a. Подгоняем overlay под реально видимую область */
@@ -94,32 +91,34 @@
     vh = vh || window.innerHeight;
     var isMobile = vw <= 600;
 
-    // 1. Размеры контента из CSS-констант
-    //    CTRL_H: 2 ряда кнопок + подписи на мобиле (~84 + ~76 = 160px)
-    var CTRL_H   = isMobile ? 160 : 60;
-    var wrapperH = 384 + CTRL_H;
-    var OVERHANG = 68;
+    // 1. Сбрасываем transform, чтобы корректно измерить layout-габариты
+    //    (offsetWidth/offsetHeight не зависят от transform, но так проще
+    //    избежать сюрпризов при будущих правках).
+    wrapper.style.transform = '';
 
-    // 2. Реальные отступы overlay (учитывает env(safe-area-inset-bottom))
-    var cs      = getComputedStyle(overlay);
-    var padTop  = parseFloat(cs.paddingTop)    || 0;
-    var padBot  = parseFloat(cs.paddingBottom) || 0;
+    // 2. Реальные отступы overlay (safe-area)
+    var cs     = getComputedStyle(overlay);
+    var padTop = parseFloat(cs.paddingTop)    || 0;
+    var padBot = parseFloat(cs.paddingBottom) || 0;
 
-    // 3. Масштаб: весь контент должен влезть в реально доступную высоту
-    //    BOTTOM_GAP — дополнительный зазор между кнопками и панелью браузера
-    var pad        = isMobile ? 0 : 16;
-    var BOTTOM_GAP = isMobile ? 20 : 0;
-    var availH     = isMobile ? vh - padTop - padBot - BOTTOM_GAP : vh;
-    var scale  = Math.min(
-      (vw - 2 * pad) / 384,
-      (availH - 2 * pad) / (wrapperH + OVERHANG)
+    // 3. Доступная область
+    var pad    = isMobile ? 0 : 16;
+    var availH = vh - padTop - padBot;
+    var availW = vw;
+
+    // 4. Реальные габариты контента (canvas + контролы + padding-top)
+    var baseW = wrapper.offsetWidth  || 1;
+    var baseH = wrapper.offsetHeight || 1;
+
+    // 5. Масштаб: вписываем в видимую область без клипа
+    var scale = Math.min(
+      (availW - 2 * pad) / baseW,
+      (availH - 2 * pad) / baseH
     );
+    scale = Math.max(0.1, scale);
 
-    // 3. Компенсация: flex не знает о шапке и центрирует только wrapper,
-    //    сдвигая контент вверх на OVERHANG*scale/2 — исправляем
-    var offsetY = (OVERHANG * scale / 2).toFixed(2);
-    wrapper.style.transform =
-      'translateY(' + offsetY + 'px) scale(' + scale + ')';
+    // 6. Применяем масштаб
+    wrapper.style.transform = 'scale(' + scale.toFixed(4) + ')';
   }
 
   /* 3. Открыть игру */

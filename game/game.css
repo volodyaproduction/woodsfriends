@@ -28,15 +28,17 @@
 .game-wrapper {
   position: relative;
   transform-origin: center center;
+  box-sizing: border-box;
+  /* Резервируем место под верхнюю шапку (header/corner/burger). */
+  padding-top: 68px;
 }
 
-/* 3. На мобиле шапка выступает на 68px вверх за пределы wrapper'а —
-      padding-top сдвигает опорную точку flexbox-центрирования вниз,
-      чтобы шапка не уходила за верхний край экрана. */
+/* 3. На мобиле учитываем safe-area (notch/home-indicator).
+      Центрирование flex идёт внутри padded-контейнера, а scale
+      считает реальную доступную высоту через getComputedStyle. */
 @media (max-width: 600px) {
   .game-overlay {
-    padding-top: 72px;
-    padding-bottom: 10px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 8px);
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
   }
 }
