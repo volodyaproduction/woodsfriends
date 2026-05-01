@@ -30,7 +30,16 @@
   transform-origin: center center;
 }
 
-/* 3. Canvas — размер задаётся динамически в life.js */
+/* 3. На мобиле шапка выступает на 68px вверх за пределы wrapper'а —
+      padding-top сдвигает опорную точку flexbox-центрирования вниз,
+      чтобы шапка не уходила за верхний край экрана. */
+@media (max-width: 600px) {
+  .game-overlay {
+    padding-top: 72px;
+  }
+}
+
+/* 4. Canvas — размер задаётся динамически в life.js */
 .game-canvas {
   display: block;
   image-rendering: pixelated;

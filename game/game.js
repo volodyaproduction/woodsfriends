@@ -58,8 +58,9 @@
     if (!wrapper) return;
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    var budget = vw <= 600 ? 635 : 580;
-    var scale = Math.min(vw / 384, vh / budget) * 0.9;
+    var budget = vw <= 600 ? 620 : 580;
+    var scale = Math.min(vw / 384, vh / budget) *
+      (vw <= 600 ? 1.0 : 0.9);
     wrapper.style.transform = 'scale(' + scale + ')';
   }
 

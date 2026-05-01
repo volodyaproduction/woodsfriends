@@ -22,7 +22,7 @@
 .life-ctrl-label {
   font-family: 'Courier New', Courier, monospace;
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.85);
   text-transform: uppercase;
   letter-spacing: 0.3px;
   white-space: nowrap;
@@ -106,7 +106,7 @@
   font-weight: bold;
   font-size: 12px;
   letter-spacing: 3px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.85);
   text-transform: uppercase;
 }
 
@@ -115,7 +115,7 @@
   font-size: 11px;
   letter-spacing: 1px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.85);
   text-transform: lowercase;
 }
 
@@ -144,7 +144,7 @@
   font-weight: bold;
   font-size: 12px;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.75);
   user-select: none;
   -webkit-user-select: none;
 }
