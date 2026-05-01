@@ -44,7 +44,7 @@
   var COLOR_GRID  = '#252545';
   var MAX_HISTORY  = 1000;
   var SPEEDS       = [1, 2, 5, 10, 20]; // поколений/сек
-  var EXPORT_CELL  = 4;  // px на клетку в GIF (128×128 для сетки 32×32)
+  var EXPORT_CELL  = 12;  // px на клетку в GIF (256×256 для сетки 32×32)
 
   // 2. Состояние
   var _canvas   = null;

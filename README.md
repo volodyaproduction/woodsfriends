@@ -54,6 +54,7 @@ Conway's Game of Life opens as a full-screen overlay when you click the pixel TV
 - **32×32 grid**, 12px cells, toroidal (edges wrap around).
 - **Draw** cells with mouse or touch drag.
 - Controls: **◀ 1 step back** (up to 100 steps), **▶ play/pause**, **1 ▶ step forward**, **↺ reset**, **− / + speed** (1–20 gen/s).
+- Export animation to **GIF**.
 - Closing the overlay preserves the grid state.
 
 Colors match the night sky palette: pastel green live cells (`#7EC87E`) on dark blue background (`#1a1a2e`).
