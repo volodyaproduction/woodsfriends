@@ -400,7 +400,7 @@
       URL.revokeObjectURL(url);
 
       // 6. Восстанавливаем кнопку
-      _btnGif.textContent = '⬇ GIF';
+      _btnGif.textContent = '⬇︎ GIF';
       _btnGif.disabled    = _gen < 10;
     }, 16);
   }
@@ -477,7 +477,7 @@
 
     _btnGif = document.createElement('button');
     _btnGif.className   = 'life-gif-btn';
-    _btnGif.textContent = '⬇ GIF';
+    _btnGif.textContent = '⬇︎ GIF';
     _btnGif.disabled    = true;
     _btnGif.addEventListener('click', exportGIF);
     corner.appendChild(_btnGif);
