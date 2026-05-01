@@ -48,20 +48,47 @@
   }
 
   /* 2. Масштабирование под viewport
-   *   384 = 32 клетки × 12px (ширина сетки)
-   *   При align-items:center шапка (top:-68px) симметрично
-   *   учитывается: budget = wrapperH + 2 * headerH (68).
-   *   desktop: (384+60)  + 2×68 = 580
-   *   mobile:  (384+115) + 2×68 = 635
+   *
+   *   Проблема: flex центрирует только wrapper, не зная о шапке
+   *   (top:-68px) — контент визуально уезжает вверх.
+   *
+   *   Решение:
+   *   1. scale считается так, чтобы весь контент (wrapper + шапка)
+   *      влезал в экран с отступом pad.
+   *   2. translateY(OVERHANG*scale/2) компенсирует смещение:
+   *      центр (wrapper + шапка) совпадает с центром overlay.
+   *
+   *   Константы из CSS:
+   *     canvas = 384px (32×12 и 16×24 дают одинаковый результат)
+   *     CTRL_H: desktop — 1 ряд кнопок ≈ 60px; mobile — 2 ряда ≈ 115px
+   *     OVERHANG = 68px (top:-68px в life.css и menu.css)
+   *
+   *   На мобильном overlay имеет padding-top:72px — вычитаем из availH.
    */
   function updateScale() {
     if (!wrapper) return;
     var vw = window.innerWidth;
     var vh = window.innerHeight;
-    var budget = vw <= 600 ? 620 : 580;
-    var scale = Math.min(vw / 384, vh / budget) *
-      (vw <= 600 ? 1.0 : 0.9);
-    wrapper.style.transform = 'scale(' + scale + ')';
+    var isMobile = vw <= 600;
+
+    // 1. Размеры контента из CSS-констант
+    var CTRL_H   = isMobile ? 115 : 60;
+    var wrapperH = 384 + CTRL_H;
+    var OVERHANG = 68;
+
+    // 2. Масштаб: весь контент (wrapper + шапка) должен влезть
+    var pad    = isMobile ? 0 : 16;
+    var availH = isMobile ? vh - 72 : vh;
+    var scale  = Math.min(
+      (vw - 2 * pad) / 384,
+      (availH - 2 * pad) / (wrapperH + OVERHANG)
+    );
+
+    // 3. Компенсация: flex не знает о шапке и центрирует только wrapper,
+    //    сдвигая контент вверх на OVERHANG*scale/2 — исправляем
+    var offsetY = (OVERHANG * scale / 2).toFixed(2);
+    wrapper.style.transform =
+      'translateY(' + offsetY + 'px) scale(' + scale + ')';
   }
 
   /* 3. Открыть игру */
