@@ -52,14 +52,15 @@
   var DEMO_DRAW_MS    = 320;  // пауза между клетками
   var DEMO_STEP_MS    = 150;  // скорость симуляции в демо
   var DEMO_GENS       = 12;   // сколько поколений показать
-  var DEMO_PAUSE_PLAY = 550;  // пауза перед «нажатием» Play
-  var DEMO_PAUSE_LOOP = 1300; // пауза перед новым циклом
-  var DEMO_TEXT_LINES   = ['1. draw cells', '2. press play'];
-  var DEMO_TYPE_MS      = 65;   // пауза между символами
-  var DEMO_AFTER_LINE1  = 380;  // пауза после печати «draw cells»
-  var DEMO_AFTER_GLIDER = 500;  // пауза после рисования glider'а
-  var DEMO_AFTER_LINE2  = 380;  // пауза перед нажатием Play
-  var DEMO_FADE_MS      = 450;  // длительность fade (синх. с CSS)
+  var DEMO_TEXT_LINES    = ['1. draw cells', '2. press play'];
+  var DEMO_TYPE_MS       = 65;   // пауза между символами
+  var DEMO_INITIAL_PAUSE = 500;  // задержка перед началом печати
+  var DEMO_AFTER_LINE1   = 380;  // пауза после печати «draw cells»
+  var DEMO_AFTER_GLIDER  = 500;  // пауза после рисования glider'а
+  var DEMO_AFTER_LINE2   = 380;  // пауза перед «нажатием» Play
+  var DEMO_FLASH_MS      = 300;  // длительность «нажатия» (синх. с CSS)
+  var DEMO_PRESS_DELAY   = 180;  // пауза от нажатия до первого шага
+  var DEMO_FADE_MS       = 450;  // длительность fade (синх. с CSS)
 
   // 1b. Авто-остановка симуляции после смерти всех клеток
   var DEAD_GRACE_GENS = 50;   // сколько холостых поколений ждать
@@ -86,15 +87,15 @@
   var _gen      = 0;
 
   // 3a. Состояние демо-анимации
-  var _demoActive   = false;
-  var _demoTimer    = null;
-  var _demoStep     = 0;
-  var _demoCursor   = null;  // {col, row} клетка под карандашом
-  var _demoBase     = null;  // опорная точка glider'а
-  var _demoLineIdx  = 0;     // индекс печатаемой строки текста
-  var _demoCharIdx  = 0;     // индекс символа в строке
-  var _demoTextEl   = null;  // контейнер DOM-подсказки
-  var _demoLineEls  = [];    // элементы строк подсказки
+  var _demoActive    = false;
+  var _demoTimer     = null;
+  var _demoRaf       = 0;     // id requestAnimationFrame фейда
+  var _demoStep      = 0;
+  var _demoCursor    = null;  // {col, row} клетка под карандашом
+  var _demoBase      = null;  // опорная точка glider'а
+  var _demoTextEl    = null;  // контейнер DOM-подсказки
+  var _demoLineEls   = [];    // элементы строк подсказки
+  var _demoCellAlpha = 1;     // прозрачность клеток демо (1→0 в фейде)
 
   // 3b. Счётчик пустых поколений для авто-остановки
   var _emptyGens = 0;
@@ -137,7 +138,7 @@
     //     (музыку не трогаем — звучит дальше)
     if (isGridEmpty()) {
       _emptyGens++;
-      if (_running && _emptyGens >= DEAD_GRACE_GENS) {
+      if (_emptyGens >= DEAD_GRACE_GENS) {
         clearInterval(_timerId);
         _timerId = null;
         _running = false;
@@ -178,9 +179,8 @@
     updateButtons();
   }
 
-  // 8. Сброс
+  // 8. Сброс (setRunning сам зовёт stopDemo внутри)
   function reset() {
-    stopDemo();
     setRunning(false);
     _grid       = new Uint8Array(COLS * ROWS);
     _history    = [];
@@ -217,20 +217,39 @@
     ctx.fillStyle = COLOR_GRID;
     ctx.fillRect(0, 0, W, H);
 
-    // 10b. Клетки с отступом 1px — создаёт эффект сетки
-    var aliveColor = _demoActive ? COLOR_DEMO : COLOR_ALIVE;
+    // 10b. Мёртвые клетки — всегда полным цветом (фон сетки под ними).
+    ctx.fillStyle = COLOR_DEAD;
     for (var r = 0; r < ROWS; r++) {
       for (var c = 0; c < COLS; c++) {
-        ctx.fillStyle = _grid[r * COLS + c]
-          ? aliveColor : COLOR_DEAD;
-        ctx.fillRect(
-          (c * CELL + 1) * s,
-          (r * CELL + 1) * s,
-          (CELL - 2) * s,
-          (CELL - 2) * s
-        );
+        if (!_grid[r * COLS + c]) {
+          ctx.fillRect(
+            (c * CELL + 1) * s,
+            (r * CELL + 1) * s,
+            (CELL - 2) * s,
+            (CELL - 2) * s
+          );
+        }
       }
     }
+
+    // 10c. Живые клетки. В фейде демо — с globalAlpha (тают, открывая фон).
+    var aliveColor = _demoActive ? COLOR_DEMO : COLOR_ALIVE;
+    var fading     = _demoActive && _demoCellAlpha < 1;
+    if (fading) { ctx.save(); ctx.globalAlpha = _demoCellAlpha; }
+    ctx.fillStyle = aliveColor;
+    for (var rr = 0; rr < ROWS; rr++) {
+      for (var cc = 0; cc < COLS; cc++) {
+        if (_grid[rr * COLS + cc]) {
+          ctx.fillRect(
+            (cc * CELL + 1) * s,
+            (rr * CELL + 1) * s,
+            (CELL - 2) * s,
+            (CELL - 2) * s
+          );
+        }
+      }
+    }
+    if (fading) { ctx.restore(); }
 
     // 10c. Карандаш демо поверх сетки
     if (_demoActive && _demoCursor) {
@@ -316,7 +335,8 @@
     if (!_btnPlay) return;
     _btnPlay.textContent  = _running ? '⏸︎' : '▶︎';
     // Pause всегда активна; Play — только если есть хоть одна клетка
-    _btnPlay.disabled     = !_running && isGridEmpty();
+    // и сейчас не идёт демо (его клетки — призрачные, не пользовательские)
+    _btnPlay.disabled     = _demoActive || (!_running && isGridEmpty());
     _btnBack.disabled     = _history.length === 0;
     _lblSpeed.textContent = SPEEDS[_speedIdx] + ' gen/sec';
     _lblGen.textContent   = _gen === 0 ? 'Play' : 'Gen: ' + _gen;
@@ -591,11 +611,9 @@
     wrapper.appendChild(corner);
 
     // 15g. Контролы и начальный рендер
+    //      (startDemo вызывает initGame при каждом открытии — здесь не зовём)
     buildControls(wrapper);
     render();
-
-    // 15h. Запуск демо при первом открытии (поле пустое)
-    startDemo();
   }
 
   // 16. Пауза симуляции (состояние поля сохраняется)
@@ -606,7 +624,6 @@
   // 17. Загрузить паттерн по центру поля
   //   cells — массив [dr, dc] смещений от центра сетки
   function loadPattern(cells) {
-    stopDemo();
     setRunning(false);
     _grid    = new Uint8Array(COLS * ROWS);
     _history = [];
@@ -643,17 +660,15 @@
     };
   }
 
-  // 18d. Запустить демо при каждом открытии с пустым полем
+  // 18c. Запустить демо при каждом открытии с пустым полем
   function startDemo() {
     if (_demoActive)    return;
     if (_running)       return;
     if (!isGridEmpty()) return;
 
-    _demoActive  = true;
-    _demoStep    = 0;
-    _demoLineIdx = 0;
-    _demoCharIdx = 0;
-    _demoBase    = {
+    _demoActive = true;
+    _demoStep   = 0;
+    _demoBase   = {
       row: Math.floor(ROWS / 2) - 1,
       col: Math.floor(COLS / 2) - 1
     };
@@ -677,34 +692,32 @@
       typeLine(0, function() {
         _demoTimer = setTimeout(demoStartDrawing, DEMO_AFTER_LINE1);
       });
-    }, 500);
+    }, DEMO_INITIAL_PAUSE);
   }
 
-  // 18e. Печать одной строки текста, потом callback
+  // 18d. Печать одной строки текста, потом callback
   function typeLine(lineIdx, done) {
     if (!_demoActive) return;
-    _demoLineIdx = lineIdx;
-    _demoCharIdx = 0;
-    _demoLineEls[lineIdx].classList.add('life-demo-line--typing');
+    var charIdx = 0;
+    var el      = _demoLineEls[lineIdx];
+    var line    = DEMO_TEXT_LINES[lineIdx];
+    el.classList.add('life-demo-line--typing');
 
     var tick = function() {
       if (!_demoActive) return;
-      var line = DEMO_TEXT_LINES[lineIdx];
-      if (_demoCharIdx < line.length) {
-        _demoCharIdx++;
-        _demoLineEls[lineIdx].textContent =
-          line.substring(0, _demoCharIdx);
+      if (charIdx < line.length) {
+        charIdx++;
+        el.textContent = line.substring(0, charIdx);
         _demoTimer = setTimeout(tick, DEMO_TYPE_MS);
       } else {
-        _demoLineEls[lineIdx]
-          .classList.remove('life-demo-line--typing');
+        el.classList.remove('life-demo-line--typing');
         done();
       }
     };
     tick();
   }
 
-  // 18f. Карандаш появляется и начинает рисовать glider
+  // 18e. Карандаш появляется и начинает рисовать glider
   function demoStartDrawing() {
     if (!_demoActive) return;
     _demoCursor = demoCursorFor(0);
@@ -712,7 +725,7 @@
     _demoTimer = setTimeout(demoDrawTick, DEMO_DRAW_MS);
   }
 
-  // 18g. Очередная клетка glider'а: рисуем, двигаем курсор дальше
+  // 18f. Очередная клетка glider'а: рисуем, двигаем курсор дальше
   function demoDrawTick() {
     if (!_demoActive) return;
 
@@ -739,7 +752,7 @@
     }
   }
 
-  // 18h. «Нажатие» Play и шаг симуляции (не трогает _gen/_history/_audio)
+  // 18g. «Нажатие» Play и шаг симуляции (не трогает _gen/_history/_audio)
   function demoPressPlay() {
     if (!_demoActive) return;
 
@@ -748,7 +761,7 @@
       setTimeout(function() {
         if (_btnPlay) _btnPlay.classList
           .remove('life-btn--demo-press');
-      }, 300);
+      }, DEMO_FLASH_MS);
     }
 
     var gens = 0;
@@ -763,24 +776,40 @@
       render();
       _demoTimer = setTimeout(tick, DEMO_STEP_MS);
     };
-    _demoTimer = setTimeout(tick, 180);
+    _demoTimer = setTimeout(tick, DEMO_PRESS_DELAY);
   }
 
-  // 18i. Демо завершено: fade-out текста и финальный stopDemo
+  // 18h. Демо завершено: текст и клетки glider'а тают синхронно
   function demoComplete() {
     if (!_demoActive) return;
     if (_demoTextEl) {
       _demoTextEl.classList.add('life-demo-text--fading');
     }
-    _demoTimer = setTimeout(stopDemo, DEMO_FADE_MS);
+    // Плавно гасим клетки glider'а через requestAnimationFrame
+    var startTs = performance.now();
+    var stepFade = function(ts) {
+      if (!_demoActive) return;
+      var t = Math.min(1, (ts - startTs) / DEMO_FADE_MS);
+      _demoCellAlpha = 1 - t;
+      render();
+      if (t < 1) {
+        _demoRaf = requestAnimationFrame(stepFade);
+      } else {
+        _demoRaf = 0;
+        stopDemo();
+      }
+    };
+    _demoRaf = requestAnimationFrame(stepFade);
   }
 
-  // 18j. Остановить демо: очистить поле, текст, отметить «видели»
+  // 18i. Остановить демо: очистить поле, текст, состояние
   function stopDemo() {
     if (!_demoActive) return;
     _demoActive = false;
     clearTimeout(_demoTimer);
     _demoTimer  = null;
+    if (_demoRaf) { cancelAnimationFrame(_demoRaf); _demoRaf = 0; }
+    _demoCellAlpha = 1;
     _demoCursor = null;
     _demoStep   = 0;
     // Прячем подсказку и снимаем мигающий курсор
@@ -799,8 +828,7 @@
 
   // 19. Изменить размер сетки (CSS-размер canvas сохраняется)
   function resizeGrid(newSize) {
-    // 1. Стоп и новые параметры
-    stopDemo();
+    // 1. Стоп и новые параметры (setRunning сам зовёт stopDemo)
     setRunning(false);
     COLS = newSize;
     ROWS = newSize;

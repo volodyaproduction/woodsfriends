@@ -114,7 +114,9 @@
 /* 6b. Подсказка-«машинка», печатается поверх canvas */
 .life-demo-text {
   position: absolute;
-  top: 80px;
+  /* top подобран так, чтобы был ~16px от низа шапки
+     (desktop header 48px → 64px; mobile header 64px → 80px) */
+  top: 64px;
   left: 0;
   right: 0;
   pointer-events: none;
@@ -215,7 +217,7 @@
   .life-title       { font-size: 18px; }
   .life-size-btn,
   .life-gif-btn     { height: 64px; font-size: 16px; }
-  .life-demo-text   { font-size: 22px; padding-left: 14px; }
+  .life-demo-text   { top: 80px; font-size: 22px; padding-left: 14px; }
   .life-ctrl-label  { font-size: 13px; }
   .life-speed-label { font-size: 16px; min-width: 12ch; }
 
