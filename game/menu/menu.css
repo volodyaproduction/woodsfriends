@@ -207,6 +207,40 @@
   text-transform: uppercase;
 }
 
+/* 11b. Главный заголовок About */
+.game-about-title {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  -webkit-text-stroke: 0.5px currentColor;
+  text-stroke: 0.5px currentColor;
+}
+
+/* 11d. Подзаголовок Rules в About — крупнее обычного pattern-name */
+.game-about-rules-name {
+  font-size: 16px;
+}
+
+/* 11c. Подсказка про initial state / generation */
+.game-about-note {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  color: #2a2418;
+  line-height: 1.6;
+  margin: 14px 0 0;
+  font-style: italic;
+  -webkit-text-stroke: 0.4px currentColor;
+  text-stroke: 0.4px currentColor;
+}
+
+.game-about-note b {
+  font-style: normal;
+}
+
 /* 12. Превью canvas — по центру */
 .game-pattern-canvas {
   margin: 0 auto 10px;
@@ -247,7 +281,10 @@
 @media (max-width: 600px) {
   .game-pattern-desc  { font-size: 16px; }
   .game-about-rule    { font-size: 16px; }
+  .game-about-note    { font-size: 16px; }
   .game-pattern-link  { font-size: 16px; }
+  .game-about-title       { font-size: 18px; }
+  .game-about-rules-name  { font-size: 16px; }
   .game-menu-btn      { font-size: 14px; }
   .game-examples-header .game-menu-title { font-size: 16px; }
 }

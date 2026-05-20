@@ -224,12 +224,12 @@
     aboutHeader.appendChild(aboutCloseBtn);
     aboutCard.appendChild(aboutHeader);
 
-    // 5b. Секция: название и автор
+    // 5b. Секция: интро (крупный заголовок + описание + ссылка)
     var secIntro = document.createElement('div');
     secIntro.className = 'game-pattern-section';
 
     var introName = document.createElement('p');
-    introName.className   = 'game-pattern-name';
+    introName.className   = 'game-about-title';
     introName.textContent = "Conway's Game of Life";
 
     var introDesc = document.createElement('p');
@@ -254,60 +254,19 @@
     secIntro.appendChild(introLink);
     aboutCard.appendChild(secIntro);
 
-    // 5c. Секция: начальное состояние
-    var secState = document.createElement('div');
-    secState.className = 'game-pattern-section';
-
-    var stateName = document.createElement('p');
-    stateName.className   = 'game-pattern-name';
-    stateName.textContent = 'Initial State';
-
-    var stateDesc = document.createElement('p');
-    stateDesc.className   = 'game-pattern-desc';
-    stateDesc.textContent =
-      'You draw the starting pattern on the grid. ' +
-      'This is the initial state from which the ' +
-      'simulation evolves autonomously.';
-
-    secState.appendChild(stateName);
-    secState.appendChild(stateDesc);
-    aboutCard.appendChild(secState);
-
-    // 5d. Секция: поколение
-    var secGen = document.createElement('div');
-    secGen.className = 'game-pattern-section';
-
-    var genName = document.createElement('p');
-    genName.className   = 'game-pattern-name';
-    genName.textContent = 'Generation';
-
-    var genDesc = document.createElement('p');
-    genDesc.className   = 'game-pattern-desc';
-    genDesc.textContent =
-      'Each step of the simulation is called a ' +
-      'generation. All cells update simultaneously ' +
-      'based on the rules below.';
-
-    secGen.appendChild(genName);
-    secGen.appendChild(genDesc);
-    aboutCard.appendChild(secGen);
-
-    // 5e. Секция: правила
+    // 5c. Секция: правила (2 пункта) + краткая подсказка
     var secRules = document.createElement('div');
     secRules.className = 'game-pattern-section';
 
     var rulesName = document.createElement('p');
-    rulesName.className   = 'game-pattern-name';
+    rulesName.className   = 'game-pattern-name game-about-rules-name';
     rulesName.textContent = 'Rules';
 
     var RULES = [
-      'A live cell with fewer than 2 neighbours dies' +
-        ' — underpopulation.',
-      'A live cell with 2 or 3 neighbours survives.',
-      'A live cell with more than 3 neighbours dies' +
-        ' — overpopulation.',
+      'A live cell with 2 or 3 neighbours survives' +
+        ' — otherwise it dies.',
       'A dead cell with exactly 3 neighbours' +
-        ' becomes alive — reproduction.'
+        ' becomes alive.'
     ];
 
     secRules.appendChild(rulesName);
@@ -317,6 +276,15 @@
       p.textContent = '• ' + text;
       secRules.appendChild(p);
     });
+
+    var rulesNote = document.createElement('p');
+    rulesNote.className = 'game-about-note';
+    rulesNote.innerHTML =
+      'You draw the <b>initial state</b>; each step ' +
+      'is a <b>generation</b>, with all cells updating ' +
+      'simultaneously.';
+    secRules.appendChild(rulesNote);
+
     aboutCard.appendChild(secRules);
 
     backdrop.appendChild(card);
