@@ -132,7 +132,10 @@
       overlay.classList.add('visible');
     });
 
-    // 3b. Масштабируем и подписываемся на resize
+    // 3b. Демо запускаем при каждом открытии (само проверит, пусто ли поле)
+    if (window.startDemo) window.startDemo();
+
+    // 3c. Масштабируем и подписываемся на resize
     applyViewport();
     _resizeHandle = applyViewport;
     window.addEventListener('resize', _resizeHandle);
@@ -140,7 +143,7 @@
       'orientationchange', _resizeHandle
     );
 
-    // 3c. visualViewport: точный размер видимой области на iOS
+    // 3d. visualViewport: точный размер видимой области на iOS
     var vv = window.visualViewport;
     if (vv) {
       _vvHandle = function() {

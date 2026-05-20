@@ -8,12 +8,12 @@
   top: 0;
   right: 0;
   width: 32px;
-  height: 64px;
+  height: 48px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   cursor: pointer;
   background: none;
   border: none;
@@ -27,6 +27,12 @@
   height: 3px;
   background: #ffffff;
   image-rendering: pixelated;
+}
+
+/* 1a. Мобильная версия — крупнее для удобного тапа */
+@media (max-width: 600px) {
+  .game-burger      { height: 64px; gap: 5px; }
+  .game-burger span { width: 26px; height: 4px; }
 }
 
 /* 2. Фон-затемнение поверх игры */
