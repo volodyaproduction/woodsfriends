@@ -338,6 +338,37 @@
       onResume();
     }
 
+    // Возврат из подкарточки (Figure Examples / About)
+    // в главное меню
+    function backToMenu() {
+      exCard.style.display    = 'none';
+      aboutCard.style.display = 'none';
+      card.style.display      = '';
+    }
+
+    // ESC: подкарточка → главное меню → закрыто → открыто.
+    // Срабатывает только когда игровой overlay видим, чтобы
+    // не реагировать на главном экране (DOM меню живёт после
+    // первого открытия игры).
+    function onKeyDown(e) {
+      if (e.key !== 'Escape' && e.keyCode !== 27) return;
+      var overlay = document.querySelector('.game-overlay');
+      if (!overlay || !overlay.classList.contains('visible')) {
+        return;
+      }
+      var isOpen = backdrop.classList.contains('visible');
+      if (!isOpen) {
+        openMenu();
+        return;
+      }
+      var inSub =
+        exCard.style.display    !== 'none' ||
+        aboutCard.style.display !== 'none';
+      if (inSub) backToMenu();
+      else       closeMenu();
+    }
+    document.addEventListener('keydown', onKeyDown);
+
     /* 7. Обработчики */
     burger.addEventListener('click', openMenu);
 
@@ -378,6 +409,7 @@
     function destroyMenu() {
       burger.removeEventListener('click', openMenu);
       closeBtn.removeEventListener('click', closeMenu);
+      document.removeEventListener('keydown', onKeyDown);
       if (backdrop.parentNode) {
         backdrop.parentNode.removeChild(backdrop);
       }
