@@ -53,20 +53,33 @@
    *    scale 5), сразу запускаем animation tvZoomOut через
    *    класс zoom-out. По окончании 0.6s снимаем и его —
    *    обёртка возвращается в полностью «чистое» состояние.
+   *    zoom-instant снимаем заодно — нужен только для входа.
    */
   function zoomOutTV() {
     if (!_wrap) return;
     if (!_wrap.classList.contains('zoom-tv')) return;
-    _wrap.classList.remove('zoom-tv');
+    _wrap.classList.remove('zoom-tv', 'zoom-instant');
     _wrap.classList.add('zoom-out');
     setTimeout(function() {
       if (_wrap) _wrap.classList.remove('zoom-out');
     }, 600);
   }
 
-  // 5. Экспорт в глобальную область (как остальные модули)
-  window.wrapScene = wrapScene;
-  window.zoomInTV  = zoomInTV;
-  window.zoomOutTV = zoomOutTV;
+  /* 5. Поставить «приближённое» состояние без анимации —
+   *    для прямого захода на /#game (F5 или ссылка): пользователь
+   *    не ждёт 1.4с наезда. Класс zoom-instant выключает
+   *    keyframes и просто фиксирует transform: scale(3.5),
+   *    при этом для zoomOutTV обёртка остаётся в состоянии zoom-tv.
+   */
+  function setZoomedTV() {
+    if (!_wrap) return;
+    _wrap.classList.add('zoom-instant', 'zoom-tv');
+  }
+
+  // 6. Экспорт в глобальную область (как остальные модули)
+  window.wrapScene   = wrapScene;
+  window.zoomInTV    = zoomInTV;
+  window.zoomOutTV   = zoomOutTV;
+  window.setZoomedTV = setZoomedTV;
 
 })();

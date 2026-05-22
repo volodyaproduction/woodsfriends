@@ -49,3 +49,13 @@
 .scene-zoom-wrap.zoom-out {
   animation: tvZoomOut 0.6s ease-in forwards;
 }
+
+/* 4. Мгновенный «приближённый» режим — для прямого захода на /#game.
+      Выключаем keyframes у .zoom-tv и фиксируем конечный transform,
+      чтобы пользователь не ждал наезда камеры при F5 / открытии
+      по ссылке. zoomOutTV снимет оба класса и проиграет нормальный
+      отъезд. */
+.scene-zoom-wrap.zoom-tv.zoom-instant {
+  animation: none;
+  transform: scale(3.5);
+}

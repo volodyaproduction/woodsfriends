@@ -6,6 +6,16 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Woods Friends</title>
 
+<!-- Прямой заход на /#game (F5 или ссылка): помечаем <html> до первой
+     отрисовки, чтобы не мелькнули сцена/ТВ под прозрачным оверлеем.
+     CSS под этим классом гасит сцену, чернит body и убирает фейд
+     оверлея. Класс снимается в stopGame перед отъездом камеры. -->
+<script>
+  if (location.hash === '#game') {
+    document.documentElement.classList.add('hash-game');
+  }
+</script>
+
 <!--
   index.html — точка входа
 
