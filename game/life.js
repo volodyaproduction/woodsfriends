@@ -423,13 +423,13 @@
     playItem.className = 'life-ctrl-item';
     playItem.appendChild(_btnPlay);
     _lblGen = document.createElement('span');
-    _lblGen.className   = 'life-ctrl-label';
+    _lblGen.className   = 'life-ctrl-label life-ctrl-label--gen';
     _lblGen.textContent = 'Gen: 0';
     playItem.appendChild(_lblGen);
 
-    bar.appendChild(makeItem(_btnBack, 'Step Back'));
+    bar.appendChild(makeItem(_btnBack, 'Back'));
     bar.appendChild(playItem);
-    bar.appendChild(makeItem(btnStep,  'Step Fwd'));
+    bar.appendChild(makeItem(btnStep,  'Fwd'));
 
     if (window.innerWidth <= 600) {
       // На мобилке: Reset + Speed во 2-й ряд
@@ -509,7 +509,7 @@
       URL.revokeObjectURL(url);
 
       // 6. Восстанавливаем кнопку
-      _btnGif.textContent = '⬇︎ GIF';
+      _btnGif.textContent = 'GIF';
       _btnGif.disabled    = _gen < 10;
     }, 16);
   }
@@ -592,7 +592,7 @@
 
     _btnGif = document.createElement('button');
     _btnGif.className   = 'life-gif-btn';
-    _btnGif.textContent = '⬇︎ GIF';
+    _btnGif.textContent = 'GIF';
     _btnGif.disabled    = true;
     _btnGif.addEventListener('click', exportGIF);
     corner.appendChild(_btnGif);

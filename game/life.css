@@ -28,6 +28,14 @@
   white-space: nowrap;
 }
 
+/* Фикс. ширина под счётчик поколений: «GEN: 9999» = 9 символов.
+   Без min-width смена 9→10→… двигает всю строку контролов. */
+.life-ctrl-label--gen {
+  display: inline-block;
+  min-width: 9ch;
+  text-align: center;
+}
+
 /* 2. Базовая кнопка в пиксельном стиле */
 .life-btn {
   min-width: 40px;
